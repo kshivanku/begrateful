@@ -12,11 +12,18 @@
       body {
         margin: 0;
         min-height: 100vh;
+        padding-bottom: 210px;
         display: grid;
         place-items: center;
-        background: #f4f1ea;
-        color: #202124;
-        font-family: Arial, Helvetica, sans-serif;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(135deg, #0646ff 0 32%, #ff1744 32% 58%, #ffd400 58% 100%);
+        background-size: 18px 18px, 18px 18px, 100% 100%;
+        color: #fff7d6;
+        font-family: "Courier New", Courier, monospace;
+        image-rendering: pixelated;
+        overflow-x: hidden;
       }
 
       main {
@@ -25,19 +32,68 @@
         display: grid;
         justify-items: center;
         gap: 24px;
+        position: relative;
+      }
+
+      .camera-shell {
+        width: min(360px, calc(100vw - 64px));
+        aspect-ratio: 1;
+        position: relative;
+        display: grid;
+        place-items: center;
       }
 
       .camera-frame {
-        width: min(400px, calc(100vw - 40px));
+        width: 100%;
         aspect-ratio: 1;
         border-radius: 50%;
         overflow: hidden;
-        background: #1f2933;
-        border: 8px solid #ffffff;
-        box-shadow: 0 24px 70px rgba(22, 26, 31, 0.22);
+        background:
+          linear-gradient(45deg, #111111 25%, transparent 25% 75%, #111111 75%),
+          linear-gradient(45deg, #111111 25%, #222222 25% 75%, #111111 75%);
+        background-position: 0 0, 10px 10px;
+        background-size: 20px 20px;
+        border: 30px solid #ffd400;
+        outline: 8px solid #111111;
+        box-shadow: 14px 14px 0 #111111, -8px -8px 0 #ff1744;
         display: grid;
         place-items: center;
         position: relative;
+        z-index: 1;
+      }
+
+      .gratitude-ticker {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 120ms linear;
+        animation: grateful-spin 7s linear infinite;
+        z-index: 2;
+      }
+
+      .camera-shell.is-strong-smile .gratitude-ticker {
+        opacity: 1;
+      }
+
+      .gratitude-ticker text {
+        fill: #ffffff;
+        stroke: #111111;
+        stroke-width: 5px;
+        paint-order: stroke;
+        font-size: 27px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+
+      @keyframes grateful-spin {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       video {
@@ -55,74 +111,392 @@
       .status {
         max-width: 310px;
         padding: 0 28px;
-        color: #f7f7f7;
+        color: #ffffff;
         font-size: 16px;
+        font-weight: 900;
         line-height: 1.45;
         text-align: center;
+        text-shadow: 3px 3px 0 #111111;
+        text-transform: uppercase;
       }
 
       .camera-frame.is-ready .status {
         display: none;
       }
 
-      .result-panel {
-        min-width: min(320px, calc(100vw - 40px));
-        padding: 14px 18px;
-        border-radius: 8px;
-        background: #ffffff;
-        box-shadow: 0 10px 30px rgba(22, 26, 31, 0.12);
-        text-align: center;
+      .gratitude-alarm {
+        position: fixed;
+        inset: 0;
+        z-index: 8;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+        opacity: 0;
       }
 
-      .result-label {
-        margin: 0;
-        color: #5f6368;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
+      .gratitude-alarm::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.55) 0 18px,
+            rgba(255, 0, 0, 0.16) 18px 36px
+          ),
+          rgba(255, 0, 0, 0.3);
+      }
+
+      .gratitude-alarm span {
+        position: relative;
+        padding: 14px 22px;
+        border: 8px solid #111111;
+        background: #ff1744;
+        color: #ffffff;
+        box-shadow: 12px 12px 0 #111111;
+        font-size: clamp(42px, 12vw, 140px);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        line-height: 0.9;
+        text-align: center;
+        text-shadow: 6px 6px 0 #111111;
         text-transform: uppercase;
       }
 
-      .result-value {
-        margin: 5px 0 0;
-        color: #202124;
-        font-size: 28px;
-        font-weight: 800;
-        line-height: 1.15;
+      body.is-gratitude-alarm .gratitude-alarm {
+        opacity: 1;
+        animation: alarm-overlay-flash 520ms steps(2, end) infinite;
       }
 
-      .result-score {
-        margin: 6px 0 0;
-        color: #5f6368;
+      body.is-gratitude-alarm .gratitude-alarm span {
+        animation: alarm-text-flash 260ms steps(2, end) infinite;
+      }
+
+      @keyframes alarm-overlay-flash {
+        0% {
+          opacity: 0.18;
+        }
+
+        100% {
+          opacity: 0.85;
+        }
+      }
+
+      @keyframes alarm-text-flash {
+        0% {
+          background: #ff1744;
+          color: #ffffff;
+          transform: scale(1);
+        }
+
+        100% {
+          background: #ffffff;
+          color: #ff1744;
+          transform: scale(1.04);
+        }
+      }
+
+      .progress-dock {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 18px 0 74px;
+        background: #111111;
+        border-top: 6px solid #ffffff;
+        box-shadow: 0 -8px 0 #ffd400;
+      }
+
+      .progress-header {
+        width: 100%;
+        padding: 0 20px;
+        margin: 0 0 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        color: #ffffff;
         font-size: 14px;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-shadow: 3px 3px 0 #0646ff;
+        text-transform: uppercase;
       }
 
-      .result-panel.is-smiling .result-value {
-        color: #0f766e;
+      .coin-wallet {
+        --stack-width: 0px;
+        width: 100vw;
+        min-height: 62px;
+        margin: 0;
+        overflow: hidden;
+        background: #ffffff;
+        border-top: 5px solid #111111;
+        border-bottom: 5px solid #111111;
+        position: relative;
       }
 
-      .result-panel.is-not-smiling .result-value {
-        color: #9f1239;
+      .coin-stack-progress {
+        position: absolute;
+        right: auto;
+        bottom: 0;
+        left: 0;
+        width: var(--stack-width);
+        height: 8px;
+        background: #0646ff;
+      }
+
+      .deposited-coins {
+        position: relative;
+        z-index: 1;
+        min-height: 52px;
+        padding: 4px 0 0;
+        display: flex;
+        align-items: flex-end;
+        gap: 0;
+      }
+
+      .deposited-coin {
+        width: 12px;
+        height: 52px;
+        object-fit: cover;
+        image-rendering: pixelated;
+      }
+
+      .deposited-coin + .deposited-coin {
+        margin-left: -1px;
+      }
+
+      .flying-coins {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .flying-coin {
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        width: 52px;
+        height: 52px;
+        background-image: url("assets/coin1.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        image-rendering: pixelated;
+        filter: drop-shadow(4px 4px 0 #ff1744);
+        --coin-start-x: calc(100vw + 60px);
+        --coin-end-x: 0px;
+        --coin-start-rotation: 0deg;
+        --coin-end-rotation: -720deg;
+        animation:
+          coin-travel 1400ms linear forwards,
+          coin-flip 180ms steps(1, end) infinite;
+      }
+
+      @keyframes coin-travel {
+        from {
+          transform: translateX(var(--coin-start-x)) rotate(var(--coin-start-rotation));
+        }
+
+        to {
+          transform: translateX(var(--coin-end-x)) rotate(var(--coin-end-rotation));
+        }
+      }
+
+      @keyframes coin-flip {
+        0%,
+        49% {
+          background-image: url("assets/coin1.png");
+        }
+
+        50%,
+        100% {
+          background-image: url("assets/coin2.png");
+        }
+      }
+
+      .progress-stops {
+        position: relative;
+        width: 100vw;
+        height: 64px;
+        margin-top: 8px;
+      }
+
+      .progress-stop {
+        position: absolute;
+        top: 0;
+        left: var(--stop-position);
+        transform: translateX(-50%);
+      }
+
+      .progress-stop::before {
+        content: "";
+        display: block;
+        width: 4px;
+        height: 18px;
+        margin: -32px auto 8px;
+        background: #ff1744;
+        border: 2px solid #ffffff;
+      }
+
+      .progress-stop img {
+        width: 54px;
+        height: 54px;
+        display: block;
+        object-fit: contain;
+        image-rendering: pixelated;
+        filter: drop-shadow(4px 4px 0 #0646ff);
+      }
+
+      .progress-stop:last-child {
+        transform: translateX(-100%);
+      }
+
+      .progress-stop:last-child::before {
+        margin-right: 0;
+      }
+
+      .progress-stop:last-child img {
+        margin-left: auto;
+      }
+
+      dialog {
+        width: min(420px, calc(100vw - 40px));
+        padding: 24px;
+        border: 6px solid #111111;
+        border-radius: 0;
+        background: #ffd400;
+        box-shadow: 12px 12px 0 #111111, -8px -8px 0 #0646ff;
+        color: #111111;
+        font-family: "Courier New", Courier, monospace;
+        text-align: center;
+        z-index: 10;
+      }
+
+      dialog::backdrop {
+        background:
+          repeating-linear-gradient(
+            45deg,
+            rgba(6, 70, 255, 0.75) 0 14px,
+            rgba(255, 23, 68, 0.75) 14px 28px
+          );
+      }
+
+      .reward-title {
+        margin: 0;
+        color: #ff1744;
+        font-size: 30px;
+        font-weight: 900;
+        line-height: 1.15;
+        text-shadow: 3px 3px 0 #ffffff;
+        text-transform: uppercase;
+      }
+
+      .reward-message {
+        margin: 12px 0 0;
+        color: #111111;
+        font-size: 16px;
+        font-weight: 900;
+        line-height: 1.45;
+      }
+
+      .nutrition-facts {
+        width: min(100%, 320px);
+        margin: 14px auto 0;
+        padding: 10px 12px;
+        border: 4px solid #111111;
+        background: #ffffff;
+        color: #111111;
+        box-shadow: 5px 5px 0 #111111;
+        font-size: 14px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .nutrition-facts[hidden] {
+        display: none;
+      }
+
+      .nutrition-title {
+        margin: 0 0 8px;
+        color: #0646ff;
+        font-size: 16px;
+      }
+
+      .nutrition-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .nutrition-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        border-top: 2px solid #111111;
+        padding-top: 5px;
+        margin-top: 5px;
+      }
+
+      .reward-food {
+        width: min(180px, 58vw);
+        height: min(180px, 58vw);
+        margin: 18px auto 0;
+        display: block;
+        object-fit: contain;
+        image-rendering: pixelated;
+        filter: drop-shadow(8px 8px 0 #111111);
+      }
+
+      .reward-food[hidden] {
+        display: none;
+      }
+
+      .reward-actions {
+        margin-top: 22px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
       }
 
       button {
         min-height: 44px;
         padding: 0 18px;
-        border: 0;
-        border-radius: 6px;
-        background: #0f766e;
+        border: 4px solid #111111;
+        border-radius: 0;
+        background: #ff1744;
         color: #ffffff;
-        font: 700 15px Arial, Helvetica, sans-serif;
+        box-shadow: 6px 6px 0 #111111;
+        font: 900 15px "Courier New", Courier, monospace;
         cursor: pointer;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
       }
 
       button:hover {
-        background: #115e59;
+        background: #0646ff;
       }
 
       button:focus-visible {
-        outline: 3px solid #14b8a6;
-        outline-offset: 3px;
+        outline: 4px solid #ffffff;
+        outline-offset: 4px;
+      }
+
+      button:active {
+        box-shadow: 2px 2px 0 #111111;
+        transform: translate(4px, 4px);
+      }
+
+      .secondary-button {
+        background: #ffffff;
+        color: #111111;
+      }
+
+      .secondary-button:hover {
+        background: #ffd400;
       }
 
       @media (max-width: 440px) {
@@ -130,27 +504,99 @@
           gap: 18px;
         }
 
+        .camera-shell {
+          width: min(330px, calc(100vw - 52px));
+        }
+
         .camera-frame {
-          border-width: 6px;
+          border-width: 24px;
+          outline-width: 6px;
+          box-shadow: 8px 8px 0 #111111, -5px -5px 0 #ff1744;
+        }
+
+        .gratitude-ticker {
+          inset: 0;
+        }
+
+        .gratitude-ticker text {
+          font-size: 30px;
+        }
+
+        .reward-actions {
+          justify-content: stretch;
+        }
+
+        .reward-actions button {
+          width: 100%;
         }
       }
     </style>
   </head>
   <body>
-    <main>
-      <div class="camera-frame" id="cameraFrame">
-        <video id="cameraVideo" autoplay playsinline muted></video>
-        <p class="status" id="statusText">Camera permission is needed to show your video here.</p>
-      </div>
+    <div class="gratitude-alarm" aria-hidden="true">
+      <span>Be Grateful</span>
+    </div>
 
-      <section class="result-panel" id="resultPanel" aria-live="polite">
-        <p class="result-label">Expression</p>
-        <p class="result-value" id="resultValue">Waiting</p>
-        <p class="result-score" id="resultScore">Smile score: --</p>
-      </section>
+    <main>
+      <div class="camera-shell" id="cameraShell">
+        <svg class="gratitude-ticker" viewBox="0 0 500 500" aria-hidden="true">
+          <defs>
+            <path id="gratitudePath" d="M 250,250 m -218,0 a 218,218 0 1,1 436,0 a 218,218 0 1,1 -436,0"></path>
+          </defs>
+          <text>
+            <textPath href="#gratitudePath" startOffset="0%">
+              I am grateful.   I am grateful.   I am grateful.   I am grateful.   I am grateful.   I am grateful.
+            </textPath>
+          </text>
+        </svg>
+        <div class="camera-frame" id="cameraFrame">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <p class="status" id="statusText">Camera permission is needed to show your video here.</p>
+        </div>
+      </div>
 
       <button id="startButton" type="button">Allow camera</button>
     </main>
+
+    <section class="progress-dock" aria-label="You earned">
+      <div class="progress-header">
+        <span>You earned</span>
+        <span id="moneyValue">$0</span>
+      </div>
+      <div class="coin-wallet" id="coinWallet" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="coin-stack-progress" id="coinStackProgress"></div>
+        <div class="deposited-coins" id="depositedCoins"></div>
+        <div class="flying-coins" id="flyingCoins"></div>
+      </div>
+      <div class="progress-stops" aria-hidden="true">
+        <span class="progress-stop" style="--stop-position: 10%">
+          <img src="assets/Banana.png" alt="Banana">
+        </span>
+        <span class="progress-stop" style="--stop-position: 25%">
+          <img src="assets/Bread.png" alt="Bread">
+        </span>
+        <span class="progress-stop" style="--stop-position: 60%">
+          <img src="assets/Chicken.png" alt="Chicken">
+        </span>
+        <span class="progress-stop" style="--stop-position: 100%">
+          <img src="assets/Cake.png" alt="Cake">
+        </span>
+      </div>
+    </section>
+
+    <dialog id="rewardDialog" aria-labelledby="rewardTitle">
+      <h2 class="reward-title" id="rewardTitle">Congratulations</h2>
+      <p class="reward-message" id="rewardMessage">Congratulations, you can now eat.</p>
+      <section class="nutrition-facts" id="nutritionFacts" hidden>
+        <p class="nutrition-title">Nutrition Facts</p>
+        <ul class="nutrition-list" id="nutritionList"></ul>
+      </section>
+      <img class="reward-food" id="rewardFoodImage" src="" alt="" hidden>
+      <div class="reward-actions">
+        <button class="secondary-button" id="keepGoingButton" type="button">Keep going</button>
+        <button id="eatButton" type="button">Eat</button>
+      </div>
+    </dialog>
 
     <script type="module">
       import {
@@ -159,18 +605,128 @@
       } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/vision_bundle.mjs";
 
       const frame = document.getElementById("cameraFrame");
+      const cameraShell = document.getElementById("cameraShell");
       const video = document.getElementById("cameraVideo");
       const statusText = document.getElementById("statusText");
       const startButton = document.getElementById("startButton");
-      const resultPanel = document.getElementById("resultPanel");
-      const resultValue = document.getElementById("resultValue");
-      const resultScore = document.getElementById("resultScore");
+      const moneyValue = document.getElementById("moneyValue");
+      const coinWallet = document.getElementById("coinWallet");
+      const depositedCoins = document.getElementById("depositedCoins");
+      const flyingCoins = document.getElementById("flyingCoins");
+      const rewardDialog = document.getElementById("rewardDialog");
+      const rewardTitle = document.getElementById("rewardTitle");
+      const rewardMessage = document.getElementById("rewardMessage");
+      const nutritionFacts = document.getElementById("nutritionFacts");
+      const nutritionList = document.getElementById("nutritionList");
+      const rewardFoodImage = document.getElementById("rewardFoodImage");
+      const keepGoingButton = document.getElementById("keepGoingButton");
+      const eatButton = document.getElementById("eatButton");
 
-      const smileThreshold = 0.35;
+      const milestones = [
+        {
+          id: "banana",
+          name: "banana",
+          label: "Banana",
+          progress: 10,
+          calories: 105,
+          image: "assets/Banana.png",
+          consumedFrames: [
+            "assets/BananaEaten-1.png",
+            "assets/BananaEaten-2.png",
+            "assets/BananaEaten-3.png",
+            "assets/BananaEaten-4.png"
+          ],
+          nutrition: [
+            ["Calories", "105"],
+            ["Potassium", "422mg"],
+            ["Sugar", "14g"]
+          ]
+        },
+        {
+          id: "bread",
+          name: "bread",
+          label: "Bread",
+          progress: 25,
+          calories: 80,
+          image: "assets/Bread.png",
+          consumedFrames: [
+            "assets/BreadEaten-1.png",
+            "assets/BreadEaten-2.png",
+            "assets/BreadEaten-3.png",
+            "assets/BreadEaten-4.png",
+            "assets/BreadEaten-5.png",
+            "assets/BreadEaten-6.png"
+          ],
+          nutrition: [
+            ["Calories", "80"],
+            ["Carbs", "15g"],
+            ["Protein", "3g"]
+          ]
+        },
+        {
+          id: "chicken",
+          name: "chicken",
+          label: "Chicken",
+          progress: 60,
+          calories: 165,
+          image: "assets/Chicken.png",
+          consumedFrames: [
+            "assets/ChickenEaten-1.png",
+            "assets/ChickenEaten-2.png",
+            "assets/ChickenEaten-3.png",
+            "assets/ChickenEaten-4.png",
+            "assets/ChickenEaten-5.png",
+            "assets/ChickenEaten-6.png"
+          ],
+          nutrition: [
+            ["Calories", "165"],
+            ["Protein", "31g"],
+            ["Fat", "4g"]
+          ]
+        },
+        {
+          id: "cake",
+          name: "cake",
+          label: "Cake",
+          progress: 100,
+          calories: 350,
+          image: "assets/Cake.png",
+          consumedFrames: [
+            "assets/CakeEaten-1.png",
+            "assets/CakeEaten-2.png",
+            "assets/CakeEaten-3.png",
+            "assets/CakeEaten-4.png",
+            "assets/CakeEaten-5.png",
+            "assets/CakeEaten-6.png"
+          ],
+          nutrition: [
+            ["Calories", "350"],
+            ["Sugar", "35g"],
+            ["Joy", "Temporary"]
+          ]
+        }
+      ];
+
+      const progressSmileThreshold = 0.8;
+      const progressGainPerSecond = 28;
+      const progressLossPerSecond = 22;
+      const coinMoneyValue = 1000;
+      const depositedCoinWidth = 12;
+      const depositedCoinOverlap = 1;
       let faceLandmarker;
       let animationFrameId;
+      let activeMilestone;
+      let coinAnimationInFlight = false;
+      let coinAnimationDirection = null;
+      let displayedCoinCount = 0;
+      let detectorIsRunning = false;
       let lastVideoTime = -1;
-      let smoothedSmileScore = 0;
+      let lastProgressTime;
+      let consumedFoodFrameIndex = 0;
+      let consumedFoodLoopId;
+      let shouldEarnCoins = false;
+      let smileProgress = 0;
+      const reachedMilestones = new Set();
 
       async function loadFaceLandmarker() {
         if (faceLandmarker) {
@@ -202,24 +758,6 @@
         return faceLandmarker;
       }
 
-      function setResult(state, score) {
-        resultPanel.classList.toggle("is-smiling", state === "smiling");
-        resultPanel.classList.toggle("is-not-smiling", state === "not-smiling");
-
-        if (state === "smiling") {
-          resultValue.textContent = "Smiling";
-        } else if (state === "not-smiling") {
-          resultValue.textContent = "Not smiling";
-        } else {
-          resultValue.textContent = "Looking for face";
-        }
-
-        resultScore.textContent =
-          typeof score === "number"
-            ? `Smile score: ${Math.round(score * 100)}%`
-            : "Smile score: --";
-      }
-
       function getBlendshapeScore(categories, categoryName) {
         const match = categories.find((category) => category.categoryName === categoryName);
         return match ? match.score : 0;
@@ -237,23 +775,304 @@
         return (leftSmile + rightSmile) / 2;
       }
 
+      function updateGratitudeTicker(score) {
+        const isStrongSmile = typeof score === "number" && score > progressSmileThreshold;
+
+        cameraShell.classList.toggle(
+          "is-strong-smile",
+          isStrongSmile
+        );
+        document.body.classList.toggle(
+          "is-gratitude-alarm",
+          detectorIsRunning && !isStrongSmile
+        );
+      }
+
+      function stopGratitudeAlarm() {
+        document.body.classList.remove("is-gratitude-alarm");
+      }
+
+      function renderProgress() {
+        syncCoinWallet(shouldEarnCoins);
+        updateStackProgressDisplay();
+      }
+
+      function updateStackProgressDisplay() {
+        const stackProgress = getStackProgress();
+
+        moneyValue.textContent = formatMoney(displayedCoinCount * coinMoneyValue);
+        coinWallet.setAttribute("aria-valuenow", Math.round(stackProgress).toString());
+        coinWallet.style.setProperty("--stack-width", `${getStackWidth(displayedCoinCount)}px`);
+      }
+
+      function formatMoney(value) {
+        return `$${value.toLocaleString("en-US")}`;
+      }
+
+      function getMilestonePrice(milestone) {
+        const requiredCoins = Math.ceil((milestone.progress / 100) * getTotalWalletCoins());
+        return requiredCoins * coinMoneyValue;
+      }
+
+      function renderNutritionFacts(milestone) {
+        nutritionList.replaceChildren();
+
+        milestone.nutrition.forEach(([label, value]) => {
+          const item = document.createElement("li");
+          const itemLabel = document.createElement("span");
+          const itemValue = document.createElement("span");
+
+          itemLabel.textContent = label;
+          itemValue.textContent = value;
+          item.append(itemLabel, itemValue);
+          nutritionList.append(item);
+        });
+
+        nutritionFacts.hidden = false;
+      }
+
+      function stopConsumedFoodLoop() {
+        clearInterval(consumedFoodLoopId);
+        consumedFoodLoopId = undefined;
+        consumedFoodFrameIndex = 0;
+      }
+
+      function startConsumedFoodLoop(milestone) {
+        stopConsumedFoodLoop();
+
+        if (!milestone.consumedFrames || milestone.consumedFrames.length === 0) {
+          rewardFoodImage.src = milestone.image;
+          return;
+        }
+
+        const frames = milestone.consumedFrames;
+        rewardFoodImage.src = frames[0];
+        consumedFoodLoopId = setInterval(() => {
+          consumedFoodFrameIndex = (consumedFoodFrameIndex + 1) % frames.length;
+          rewardFoodImage.src = frames[consumedFoodFrameIndex];
+        }, 220);
+      }
+
+      function renderDepositedCoins() {
+        depositedCoins.replaceChildren();
+
+        for (let index = 0; index < displayedCoinCount; index += 1) {
+          const coin = document.createElement("img");
+          coin.className = "deposited-coin";
+          coin.src = "assets/coin3.png";
+          coin.alt = "";
+          depositedCoins.append(coin);
+        }
+
+        updateStackProgressDisplay();
+      }
+
+      function getCoinTargetX(index) {
+        const walletWidth = coinWallet.clientWidth || window.innerWidth;
+        return Math.min(getStackWidth(index), walletWidth - 54);
+      }
+
+      function getTotalWalletCoins() {
+        const walletWidth = coinWallet.clientWidth || window.innerWidth;
+        const coinStep = depositedCoinWidth - depositedCoinOverlap;
+        return Math.max(1, Math.floor((walletWidth - depositedCoinWidth) / coinStep) + 1);
+      }
+
+      function getStackWidth(coinCount) {
+        if (coinCount <= 0) {
+          return 0;
+        }
+
+        return coinCount * depositedCoinWidth - (coinCount - 1) * depositedCoinOverlap;
+      }
+
+      function getStackProgress() {
+        return Math.min(100, (displayedCoinCount / getTotalWalletCoins()) * 100);
+      }
+
+      function cancelCoinAnimation() {
+        coinAnimationInFlight = false;
+        coinAnimationDirection = null;
+        flyingCoins.replaceChildren();
+      }
+
+      function animateCoinDeposit() {
+        coinAnimationInFlight = true;
+        coinAnimationDirection = "deposit";
+
+        const coin = document.createElement("div");
+        coin.className = "flying-coin";
+        coin.style.setProperty("--coin-start-x", "calc(100vw + 60px)");
+        coin.style.setProperty("--coin-end-x", `${getCoinTargetX(displayedCoinCount)}px`);
+        coin.style.setProperty("--coin-start-rotation", "0deg");
+        coin.style.setProperty("--coin-end-rotation", "-720deg");
+        flyingCoins.append(coin);
+
+        const finishDeposit = (event) => {
+          if (event.animationName !== "coin-travel") {
+            return;
+          }
+
+          coin.removeEventListener("animationend", finishDeposit);
+          coin.remove();
+          const currentTargetCoinCount = Math.floor(
+            (smileProgress / 100) * getTotalWalletCoins()
+          );
+          displayedCoinCount = Math.min(displayedCoinCount + 1, currentTargetCoinCount);
+          renderDepositedCoins();
+          coinAnimationInFlight = false;
+          coinAnimationDirection = null;
+          syncCoinWallet(shouldEarnCoins);
+        };
+
+        coin.addEventListener("animationend", finishDeposit);
+      }
+
+      function animateCoinWithdrawal() {
+        if (displayedCoinCount <= 0) {
+          return;
+        }
+
+        coinAnimationInFlight = true;
+        coinAnimationDirection = "withdraw";
+        displayedCoinCount -= 1;
+        renderDepositedCoins();
+
+        const coin = document.createElement("div");
+        coin.className = "flying-coin";
+        coin.style.setProperty("--coin-start-x", `${getCoinTargetX(displayedCoinCount)}px`);
+        coin.style.setProperty("--coin-end-x", "calc(100vw + 60px)");
+        coin.style.setProperty("--coin-start-rotation", "0deg");
+        coin.style.setProperty("--coin-end-rotation", "720deg");
+        flyingCoins.append(coin);
+
+        const finishWithdrawal = (event) => {
+          if (event.animationName !== "coin-travel") {
+            return;
+          }
+
+          coin.removeEventListener("animationend", finishWithdrawal);
+          coin.remove();
+          coinAnimationInFlight = false;
+          coinAnimationDirection = null;
+          syncCoinWallet(shouldEarnCoins);
+        };
+
+        coin.addEventListener("animationend", finishWithdrawal);
+      }
+
+      function syncCoinWallet(isEarning) {
+        const targetCoinCount = Math.floor((smileProgress / 100) * getTotalWalletCoins());
+
+        if (!isEarning && coinAnimationDirection === "deposit") {
+          cancelCoinAnimation();
+        }
+
+        if (!isEarning) {
+          if (!coinAnimationInFlight && displayedCoinCount > 0) {
+            animateCoinWithdrawal();
+          }
+          return;
+        }
+
+        if (coinAnimationDirection === "withdraw") {
+          cancelCoinAnimation();
+        }
+
+        if (targetCoinCount > displayedCoinCount) {
+          if (!coinAnimationInFlight) {
+            animateCoinDeposit();
+          }
+        }
+      }
+
+      function resetCoinWallet() {
+        cancelCoinAnimation();
+        displayedCoinCount = 0;
+        renderDepositedCoins();
+      }
+
+      function showMilestoneDialog(milestone) {
+        cancelCoinAnimation();
+        stopConsumedFoodLoop();
+        const milestonePrice = getMilestonePrice(milestone);
+
+        activeMilestone = milestone;
+        rewardTitle.textContent = `You earned ${milestone.label}`;
+        rewardMessage.textContent = `Congratulations, you can now eat ${milestone.name}.`;
+        renderNutritionFacts(milestone);
+        rewardFoodImage.src = milestone.image;
+        rewardFoodImage.alt = milestone.label;
+        rewardFoodImage.hidden = false;
+        eatButton.textContent = `Buy ${milestone.label} - ${formatMoney(milestonePrice)}`;
+        eatButton.hidden = false;
+        keepGoingButton.textContent = "I need to save money";
+
+        if (!rewardDialog.open) {
+          rewardDialog.showModal();
+        }
+      }
+
+      function checkMilestones() {
+        if (rewardDialog.open) {
+          return;
+        }
+
+        const stackProgress = getStackProgress();
+
+        const milestone = milestones.find((item) => {
+          return !reachedMilestones.has(item.id) && stackProgress >= item.progress;
+        });
+
+        if (milestone) {
+          reachedMilestones.add(milestone.id);
+          showMilestoneDialog(milestone);
+        }
+      }
+
+      function resetProgress() {
+        smileProgress = 0;
+        lastProgressTime = performance.now();
+        reachedMilestones.clear();
+        resetCoinWallet();
+        renderProgress();
+      }
+
+      function updateProgress(score, now) {
+        if (rewardDialog.open) {
+          lastProgressTime = now;
+          return;
+        }
+
+        const elapsedSeconds = lastProgressTime ? (now - lastProgressTime) / 1000 : 0;
+        const isStrongSmile = typeof score === "number" && score > progressSmileThreshold;
+        const rate = isStrongSmile ? progressGainPerSecond : -progressLossPerSecond;
+
+        shouldEarnCoins = isStrongSmile;
+        smileProgress = Math.max(0, Math.min(100, smileProgress + rate * elapsedSeconds));
+        renderProgress();
+        checkMilestones();
+        lastProgressTime = now;
+      }
+
       function detectSmile() {
+        const now = performance.now();
+
         if (video.currentTime !== lastVideoTime) {
-          const result = faceLandmarker.detectForVideo(video, performance.now());
+          const result = faceLandmarker.detectForVideo(video, now);
           const smileScore = readSmileScore(result);
 
           if (typeof smileScore === "number") {
-            smoothedSmileScore = smoothedSmileScore * 0.7 + smileScore * 0.3;
-            setResult(
-              smoothedSmileScore >= smileThreshold ? "smiling" : "not-smiling",
-              smoothedSmileScore
-            );
+            updateGratitudeTicker(smileScore);
+            updateProgress(smileScore, now);
           } else {
-            smoothedSmileScore = 0;
-            setResult("searching");
+            updateGratitudeTicker(null);
+            updateProgress(null, now);
           }
 
           lastVideoTime = video.currentTime;
+        } else {
+          updateProgress(shouldEarnCoins ? 1 : 0, now);
         }
 
         animationFrameId = requestAnimationFrame(detectSmile);
@@ -268,7 +1087,7 @@
         startButton.disabled = true;
         startButton.textContent = "Loading detector...";
         statusText.textContent = "Loading smile detector...";
-        setResult("searching");
+        updateGratitudeTicker(null);
 
         try {
           await loadFaceLandmarker();
@@ -289,6 +1108,7 @@
           await video.play();
           frame.classList.add("is-ready");
           startButton.style.display = "none";
+          detectorIsRunning = true;
           detectSmile();
         } catch (error) {
           startButton.disabled = false;
@@ -297,12 +1117,45 @@
             error.name === "NotAllowedError"
               ? "Camera permission was blocked. Allow camera access in your browser to continue."
               : "Could not start the camera or smile detector. Please check your camera and connection.";
-          setResult("searching");
+          detectorIsRunning = false;
+          updateGratitudeTicker(null);
+          stopGratitudeAlarm();
         }
       }
 
+      keepGoingButton.addEventListener("click", () => {
+        rewardDialog.close();
+      });
+
+      rewardDialog.addEventListener("close", () => {
+        stopConsumedFoodLoop();
+        activeMilestone = null;
+        lastProgressTime = performance.now();
+      });
+
+      eatButton.addEventListener("click", () => {
+        if (!activeMilestone) {
+          return;
+        }
+
+        const consumedMilestone = activeMilestone;
+        resetProgress();
+        rewardTitle.textContent = "Yummy";
+        rewardMessage.textContent = `You consumed ${consumedMilestone.calories} calories.`;
+        nutritionFacts.hidden = true;
+        rewardFoodImage.alt = consumedMilestone.label;
+        rewardFoodImage.hidden = false;
+        startConsumedFoodLoop(consumedMilestone);
+        eatButton.hidden = true;
+        keepGoingButton.textContent = "So grateful!";
+      });
+
+      window.addEventListener("resize", renderProgress);
       startButton.addEventListener("click", startCamera);
       window.addEventListener("beforeunload", () => {
+        detectorIsRunning = false;
+        stopGratitudeAlarm();
+        stopConsumedFoodLoop();
         cancelAnimationFrame(animationFrameId);
 
         const stream = video.srcObject;
