@@ -14,13 +14,14 @@ The current prototype is a single static `index.html` page.
 - It shows the camera feed inside a centered circular frame.
 - It uses MediaPipe Face Landmarker in the browser to estimate whether the player is smiling.
 - It reads the `mouthSmileLeft` and `mouthSmileRight` blendshape scores.
-- It does not show the smile score directly on screen.
+- It does not show the smile score during normal play, but the emergency `Be Grateful` alarm includes the current smile score as a secondary readout.
 - The camera ring is yellow before camera permission/detection starts, red when the detector is running and the player is below the `80%` smile threshold, and green when they are smiling above the threshold.
 - When the current smile score is more than `80%`, a circular ticker appears on the green camera ring with a continuous loop of `I am grateful.`
 - The camera frame stays large and centered before and after permission. Do not shrink or dock the video during play.
 - The background should be filled with a continuous vertically scrolling propaganda pattern repeating `Don't boo, be grateful.` across the page as part of the arcade/night-sky atmosphere.
 - The pixel night-sky stars should sparkle with a subtle stepped arcade animation.
-- When camera detection is running and the current smile score is at or below the `80%` threshold, the screen enters an emergency alarm state with flashing red overlay and large `Be Grateful` text.
+- When camera detection is running and the current smile score is at or below the `80%` threshold, the screen enters an emergency alarm state with a softened red pulse, a large `Be Grateful` title, and a smaller live smile score readout. Avoid rapid flashing that could be anxiety-triggering.
+- The `Be Grateful` alarm title and smile score both use the arcade-specific pixel font `Press Start 2P`, with the score sized smaller as supporting text.
 - It fills the bottom money wallet when the current smile score is more than `80%`.
 - It drains the money wallet when the smile score is `80%` or lower, or when no face is detected.
 - The wallet spans the full viewport width and is visualized as coins instead of a conventional progress fill.
@@ -173,3 +174,7 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Made the circular camera ring stateful: yellow before permission, red below the smile threshold after detection starts, and green when the player smiles above `80%`.
 - Changed the `Don't boo, be grateful.` marquee from sparse edge columns into a tiled text background that fills the whole page and scrolls vertically in a seamless loop.
 - Added a second pixel-star layer with a stepped brightness/opacity animation so the night-sky stars sparkle.
+- Added the live smile score to the `Be Grateful` alarm overlay with font hierarchy: the warning remains dominant and the score appears as smaller supporting text.
+- Softened the `Be Grateful` alarm animation by replacing rapid hard flashes with a slower, lower-contrast red pulse and a gentler card scale change.
+- Changed the `Be Grateful` alarm title to use the pixelated `Press Start 2P` font from Google Fonts and adjusted its size/line-height so the title keeps clear hierarchy without overflowing.
+- Updated the alarm smile score to use `Press Start 2P` as well, with smaller sizing and looser line-height to preserve hierarchy under the title.

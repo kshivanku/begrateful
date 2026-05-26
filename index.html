@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Begrateful</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
       * {
         box-sizing: border-box;
@@ -271,38 +274,57 @@
           rgba(255, 0, 0, 0.3);
       }
 
-      .gratitude-alarm span {
+      .gratitude-alarm-card {
         position: relative;
         padding: 14px 22px;
         border: 8px solid #111111;
         background: #ff1744;
         color: #ffffff;
         box-shadow: 12px 12px 0 #111111;
-        font-size: clamp(42px, 12vw, 140px);
-        font-weight: 900;
-        letter-spacing: 0.04em;
-        line-height: 0.9;
         text-align: center;
         text-shadow: 6px 6px 0 #111111;
         text-transform: uppercase;
       }
 
-      body.is-gratitude-alarm .gratitude-alarm {
-        opacity: 1;
-        animation: alarm-overlay-flash 520ms steps(2, end) infinite;
+      .gratitude-alarm-title {
+        display: block;
+        font-family: "Press Start 2P", "Courier New", Courier, monospace;
+        font-size: clamp(26px, 6vw, 86px);
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 1.25;
       }
 
-      body.is-gratitude-alarm .gratitude-alarm span {
-        animation: alarm-text-flash 260ms steps(2, end) infinite;
+      .gratitude-alarm-score {
+        display: block;
+        margin: 14px 0 0;
+        padding-top: 10px;
+        border-top: 5px solid #111111;
+        color: #ffd400;
+        font-family: "Press Start 2P", "Courier New", Courier, monospace;
+        font-size: clamp(12px, 2vw, 24px);
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 1.45;
+        text-shadow: 4px 4px 0 #111111;
+      }
+
+      body.is-gratitude-alarm .gratitude-alarm {
+        opacity: 1;
+        animation: alarm-overlay-flash 1800ms ease-in-out infinite;
+      }
+
+      body.is-gratitude-alarm .gratitude-alarm-card {
+        animation: alarm-text-flash 1800ms ease-in-out infinite;
       }
 
       @keyframes alarm-overlay-flash {
         0% {
-          opacity: 0.18;
+          opacity: 0.26;
         }
 
         100% {
-          opacity: 0.85;
+          opacity: 0.5;
         }
       }
 
@@ -314,9 +336,9 @@
         }
 
         100% {
-          background: #ffffff;
-          color: #ff1744;
-          transform: scale(1.04);
+          background: #d90f36;
+          color: #ffffff;
+          transform: scale(1.015);
         }
       }
 
@@ -811,7 +833,10 @@
   </head>
   <body>
     <div class="gratitude-alarm" aria-hidden="true">
-      <span>Be Grateful</span>
+      <div class="gratitude-alarm-card">
+        <strong class="gratitude-alarm-title">Be Grateful</strong>
+        <span class="gratitude-alarm-score" id="alarmSmileScore">Smile Score: 0%</span>
+      </div>
     </div>
 
     <div class="slogan-marquee" aria-hidden="true"></div>
@@ -916,6 +941,7 @@
       const video = document.getElementById("cameraVideo");
       const statusText = document.getElementById("statusText");
       const startButton = document.getElementById("startButton");
+      const alarmSmileScore = document.getElementById("alarmSmileScore");
       const maximumEarningValue = document.getElementById("maximumEarningValue");
       const caloriesConsumedValue = document.getElementById("caloriesConsumedValue");
       const currentBalanceValue = document.getElementById("currentBalanceValue");
@@ -1106,6 +1132,9 @@
 
       function updateGratitudeTicker(score) {
         const isStrongSmile = typeof score === "number" && score > progressSmileThreshold;
+        const smileScorePercent = typeof score === "number" ? Math.round(score * 100) : 0;
+
+        alarmSmileScore.textContent = `Smile Score: ${smileScorePercent}%`;
 
         cameraShell.classList.toggle(
           "is-strong-smile",
@@ -1389,7 +1418,7 @@
         rewardFoodImage.hidden = false;
         eatButton.textContent = `Buy ${milestone.label} - ${formatMoney(milestonePrice)}`;
         eatButton.hidden = false;
-        keepGoingButton.textContent = "I need to save money";
+        keepGoingButton.textContent = "Save money";
 
         if (!rewardDialog.open) {
           rewardDialog.showModal();
