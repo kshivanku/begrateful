@@ -50,6 +50,7 @@ The current prototype is a single static `index.html` page.
 - After food is purchased/eaten, the matching food icon in the progress/wallet milestone bar should also be replaced by that food's consumed-frame loop.
 - Wallet milestone icons must render inside fixed-size boxes so whole/eaten frame swaps do not change the progress bar height.
 - The bottom wallet/food milestone area should stay compact and not take excessive vertical space.
+- On mobile, the bottom wallet/food milestone area should be especially compact.
 - In the pre-purchase reward dialog, the secondary CTA should say `I need to save money`; clicking it closes the dialog and preserves progress.
 - After clicking `I need to save money`, money flow should pause rather than immediately draining while the player is not smiling. The alarm can continue. Money flow resumes once the player becomes grateful/smiles above threshold again.
 - Food milestones should be earnable again after the wallet drops below that milestone and later reaches it again.
@@ -152,5 +153,6 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Updated wallet milestone food icons so after a food is purchased, its progress-bar image changes from the whole food asset to the matching consumed-frame loop.
 - Fixed wallet milestone icon sizing so consumed-frame loops do not make the progress bar jump vertically.
 - Reduced the vertical height of the bottom wallet area by shrinking dock padding, coin lane height, flying/deposited coin sizes, and food milestone icon boxes.
+- Added mobile-specific wallet compaction with shorter dock padding, smaller coin lane, smaller coin sprites, smaller food milestone icons, and reduced mobile body bottom padding.
 - Removed the pre-purchase reward dialog sentence `Congratulations, you can now eat...` while keeping the consumed-calorie message in the Yummy state.
 - Changed save-money behavior so dismissing a reward dialog pauses wallet inflow/outflow until the player smiles above the `80%` threshold again. Also re-arms reached food milestones once the wallet drops below them, allowing the same food dialog to appear again after losing and re-earning enough money.

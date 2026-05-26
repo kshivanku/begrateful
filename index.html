@@ -546,6 +546,10 @@
       }
 
       @media (max-width: 440px) {
+        body {
+          padding-bottom: 104px;
+        }
+
         main {
           gap: 18px;
         }
@@ -568,9 +572,16 @@
           font-size: 30px;
         }
 
+        .progress-dock {
+          padding: 8px 0 26px;
+          border-top-width: 4px;
+          box-shadow: 0 -5px 0 #ffd400;
+        }
+
         .progress-header {
           width: 100%;
           padding: 0;
+          margin-bottom: 5px;
           font-size: 11px;
         }
 
@@ -606,6 +617,54 @@
 
         .stat-value {
           font-size: 12px;
+        }
+
+        .coin-wallet {
+          min-height: 34px;
+          border-top-width: 3px;
+          border-bottom-width: 3px;
+        }
+
+        .coin-stack-progress {
+          height: 5px;
+        }
+
+        .deposited-coins {
+          min-height: 28px;
+          padding-top: 2px;
+        }
+
+        .deposited-coin {
+          height: 28px;
+        }
+
+        .flying-coin {
+          bottom: 3px;
+          width: 30px;
+          height: 30px;
+        }
+
+        .progress-stops {
+          height: 32px;
+          margin-top: 3px;
+        }
+
+        .progress-stop {
+          width: 30px;
+          height: 30px;
+        }
+
+        .progress-stop::before {
+          width: 3px;
+          height: 8px;
+          margin: -15px auto 3px;
+          border-width: 1px;
+        }
+
+        .progress-stop img {
+          width: 28px;
+          height: 28px;
+          filter: drop-shadow(3px 3px 0 #0646ff);
         }
 
         .reward-actions {
