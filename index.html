@@ -43,6 +43,16 @@
         place-items: center;
       }
 
+      .camera-shell.is-docked {
+        width: 160px;
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 16px);
+        right: auto;
+        left: 50%;
+        margin-left: -80px;
+        z-index: 6;
+      }
+
       .camera-frame {
         width: 100%;
         aspect-ratio: 1;
@@ -60,6 +70,17 @@
         place-items: center;
         position: relative;
         z-index: 1;
+      }
+
+      .camera-shell.is-docked .camera-frame {
+        border-width: 7px;
+        outline-width: 3px;
+        box-shadow: 5px 5px 0 #111111, -3px -3px 0 #ff1744;
+      }
+
+      .camera-shell.is-docked .gratitude-ticker text {
+        font-size: 40px;
+        stroke-width: 7px;
       }
 
       .gratitude-ticker {
@@ -558,10 +579,23 @@
           width: min(330px, calc(100vw - 52px));
         }
 
+        .camera-shell.is-docked {
+          width: 160px;
+          top: calc(env(safe-area-inset-top, 0px) + 12px);
+          left: 50%;
+          margin-left: -80px;
+        }
+
         .camera-frame {
           border-width: 24px;
           outline-width: 6px;
           box-shadow: 8px 8px 0 #111111, -5px -5px 0 #ff1744;
+        }
+
+        .camera-shell.is-docked .camera-frame {
+          border-width: 7px;
+          outline-width: 3px;
+          box-shadow: 5px 5px 0 #111111, -3px -3px 0 #ff1744;
         }
 
         .gratitude-ticker {
@@ -696,7 +730,7 @@
         </svg>
         <div class="camera-frame" id="cameraFrame">
           <video id="cameraVideo" autoplay playsinline muted></video>
-          <p class="status" id="statusText">Camera permission is needed to show your video here.</p>
+          <p class="status" id="statusText">Show your grateful smile to get your allowance.</p>
         </div>
       </div>
 
@@ -895,6 +929,7 @@
       const progressGainPerSecond = 28;
       const progressLossPerSecond = 22;
       const coinMoneyValue = 1000;
+      const cameraDockCoinThreshold = 3;
       const depositedCoinWidth = 12;
       const depositedCoinOverlap = 1;
       let faceLandmarker;
@@ -902,6 +937,7 @@
       let activeMilestone;
       let coinAnimationInFlight = false;
       let coinAnimationDirection = null;
+      let cameraIsDocked = false;
       let displayedCoinCount = 0;
       let dialogState = null;
       let detectorIsRunning = false;
@@ -981,6 +1017,45 @@
         document.body.classList.remove("is-gratitude-alarm");
       }
 
+      function setCameraDocked(shouldDock) {
+        if (cameraIsDocked === shouldDock) {
+          return;
+        }
+
+        const firstRect = cameraShell.getBoundingClientRect();
+        cameraShell.getAnimations().forEach((animation) => animation.cancel());
+        cameraIsDocked = shouldDock;
+        cameraShell.classList.toggle("is-docked", shouldDock);
+        const lastRect = cameraShell.getBoundingClientRect();
+        const firstCenterX = firstRect.left + firstRect.width / 2;
+        const firstCenterY = firstRect.top + firstRect.height / 2;
+        const lastCenterX = lastRect.left + lastRect.width / 2;
+        const lastCenterY = lastRect.top + lastRect.height / 2;
+        const deltaX = firstCenterX - lastCenterX;
+        const deltaY = firstCenterY - lastCenterY;
+        const scaleX = firstRect.width / lastRect.width;
+        const scaleY = firstRect.height / lastRect.height;
+
+        cameraShell.animate(
+          [
+            {
+              transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`
+            },
+            {
+              transform: "translate(0, 0) scale(1, 1)"
+            }
+          ],
+          {
+            duration: 700,
+            easing: "cubic-bezier(0.16, 1, 0.3, 1)"
+          }
+        );
+      }
+
+      function updateCameraDocking() {
+        setCameraDocked(shouldEarnCoins && displayedCoinCount >= cameraDockCoinThreshold);
+      }
+
       function renderProgress() {
         syncCoinWallet(shouldEarnCoins);
         updateStackProgressDisplay();
@@ -1003,6 +1078,7 @@
         currentBalanceValueLoop.textContent = currentBalanceText;
         coinWallet.setAttribute("aria-valuenow", Math.round(stackProgress).toString());
         coinWallet.style.setProperty("--stack-width", `${getStackWidth(displayedCoinCount)}px`);
+        updateCameraDocking();
       }
 
       function formatMoney(value) {
@@ -1277,6 +1353,11 @@
 
         const elapsedSeconds = lastProgressTime ? (now - lastProgressTime) / 1000 : 0;
         const isStrongSmile = typeof score === "number" && score > progressSmileThreshold;
+
+        if (!isStrongSmile) {
+          shouldEarnCoins = false;
+          updateCameraDocking();
+        }
 
         if (pauseMoneyUntilGrateful) {
           shouldEarnCoins = false;
