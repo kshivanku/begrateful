@@ -59,6 +59,7 @@ The current prototype is a single static `index.html` page.
 - The bottom wallet/food milestone area should stay compact and not take excessive vertical space.
 - On mobile, the bottom wallet/food milestone area should be especially compact.
 - In the pre-purchase reward dialog, the secondary CTA should say `I need to save money`; clicking it closes the dialog and preserves progress.
+- The final Cake milestone is terminal: its reward dialog should hide the save-money option and only offer the cake purchase/eat CTA.
 - After clicking `I need to save money`, money flow should pause rather than immediately draining while the player is not smiling. The alarm can continue. Money flow resumes once the player becomes grateful/smiles above threshold again.
 - Food milestones should be earnable again after the wallet drops below that milestone and later reaches it again.
 - Progress pauses while the dialog is open.
@@ -178,3 +179,4 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Softened the `Be Grateful` alarm animation by replacing rapid hard flashes with a slower, lower-contrast red pulse and a gentler card scale change.
 - Changed the `Be Grateful` alarm title to use the pixelated `Press Start 2P` font from Google Fonts and adjusted its size/line-height so the title keeps clear hierarchy without overflowing.
 - Updated the alarm smile score to use `Press Start 2P` as well, with smaller sizing and looser line-height to preserve hierarchy under the title.
+- Made the Cake milestone dialog terminal by hiding the save-money CTA when Cake is earned, while restoring the `So grateful!` CTA after eating.

@@ -1372,6 +1372,7 @@
         eatButton.textContent = `Buy ${milestone.label} - ${formatMoney(milestonePrice)}`;
         eatButton.hidden = false;
         keepGoingButton.textContent = "Save money";
+        keepGoingButton.hidden = milestone.id === "cake";
 
         if (!rewardDialog.open) {
           rewardDialog.showModal();
@@ -1548,6 +1549,7 @@
         startConsumedFoodLoop(consumedMilestone);
         startStopFoodLoop(consumedMilestone);
         eatButton.hidden = true;
+        keepGoingButton.hidden = false;
         keepGoingButton.textContent = "So grateful!";
       });
 
