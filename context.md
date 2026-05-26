@@ -16,8 +16,7 @@ The current prototype is a single static `index.html` page.
 - It reads the `mouthSmileLeft` and `mouthSmileRight` blendshape scores.
 - It does not show the smile score directly on screen.
 - When the current smile score is more than `80%`, a circular ticker appears on the yellow camera ring with a continuous loop of `I am grateful.`
-- Before permission, the camera frame is large and centered. After permission, it stays centered while the player learns to smile. Once the player earns at least three coins while smiling, the camera animates into a fixed top-center bubble around `160px x 160px`. If the player stops smiling, it animates back to the centered position while the alarm/blinker is active.
-- Camera docking animation should stay visually anchored to the center of the camera circle, without side-to-side drift while zooming.
+- The camera frame stays large and centered before and after permission. Do not shrink or dock the video during play.
 - When camera detection is running and the current smile score is at or below the `80%` threshold, the screen enters an emergency alarm state with flashing red overlay and large `Be Grateful` text.
 - It fills the bottom money wallet when the current smile score is more than `80%`.
 - It drains the money wallet when the smile score is `80%` or lower, or when no face is detected.
@@ -30,7 +29,8 @@ The current prototype is a single static `index.html` page.
 - `Calories consumed` is the total calories from purchased/eaten foods during the session.
 - While the player is earning progress, a coin animates from the right side of the wallet lane, flipping between `coin1.png` and `coin2.png`.
 - Deposited wallet coins stack flush from left to right using `coin3.png`.
-- When the smile drops below the earning threshold, coins withdraw from the stack one at a time in the opposite direction at the same animation speed.
+- The wallet should get progressively harder to fill: as the wallet balance rises, both the smile-to-money rate and the coin travel animation slow down so later milestones take more sustained smiling.
+- When the smile drops below the earning threshold, coins withdraw from the stack one at a time in the opposite direction at the same current difficulty-adjusted animation speed.
 - If the smile crosses the threshold while a coin is moving, the in-flight coin animation should cancel and reverse direction immediately. Coin direction should be based on the current/raw threshold state, not a smoothed score.
 - The visible wallet value is based on the deposited coin stack, not the internal smile-progress accumulator.
 - The blue wallet strip should match the visible deposited coin stack width.
@@ -157,8 +157,8 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Fixed wallet milestone icon sizing so consumed-frame loops do not make the progress bar jump vertically.
 - Reduced the vertical height of the bottom wallet area by shrinking dock padding, coin lane height, flying/deposited coin sizes, and food milestone icon boxes.
 - Added mobile-specific wallet compaction with shorter dock padding, smaller coin lane, smaller coin sprites, smaller food milestone icons, and reduced mobile body bottom padding.
-- Changed the camera docking behavior: it no longer moves immediately after permission. It now animates to an approximately `160px x 160px` top-center bubble only after the player earns at least three coins while smiling, and animates back to center as soon as the player stops smiling.
-- Adjusted camera docking CSS/animation math to anchor movement from the center of the camera circle instead of top-left positioning, reducing sideways drift during zoom in/out.
+- Removed the camera docking/shrinking behavior. The video now remains in the original centered circular frame before and after camera permission.
 - Updated reward dialog title grammar with per-food articles, e.g. `You earned a banana` and `You earned some bread`.
 - Removed the pre-purchase reward dialog sentence `Congratulations, you can now eat...` while keeping the consumed-calorie message in the Yummy state.
 - Changed save-money behavior so dismissing a reward dialog pauses wallet inflow/outflow until the player smiles above the `80%` threshold again. Also re-arms reached food milestones once the wallet drops below them, allowing the same food dialog to appear again after losing and re-earning enough money.
+- Made wallet progression progressively harder by reducing earn/loss rates as balance rises and by increasing each coin's travel duration from the base speed according to current wallet progress.
