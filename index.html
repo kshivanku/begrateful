@@ -27,8 +27,7 @@
         position: relative;
       }
 
-      body::before,
-      body::after {
+      body::before {
         content: "";
         position: fixed;
         inset: 0;
@@ -68,52 +67,6 @@
           16px 72px,
           66px 96px,
           30px 118px;
-      }
-
-      body::after {
-        z-index: 0;
-        opacity: 0.2;
-        background:
-          radial-gradient(circle at 12% 24%, #ffffff 0 2px, transparent 3px),
-          radial-gradient(circle at 34% 18%, #ffd400 0 2px, transparent 3px),
-          radial-gradient(circle at 57% 36%, #ffffff 0 2px, transparent 3px),
-          radial-gradient(circle at 72% 14%, #ffd400 0 2px, transparent 3px),
-          radial-gradient(circle at 91% 44%, #ffffff 0 2px, transparent 3px),
-          radial-gradient(circle at 21% 68%, #ffd400 0 2px, transparent 3px),
-          radial-gradient(circle at 45% 82%, #ffffff 0 2px, transparent 3px),
-          radial-gradient(circle at 80% 76%, #ffd400 0 2px, transparent 3px);
-        background-size:
-          160px 160px,
-          220px 220px,
-          250px 250px,
-          190px 190px,
-          280px 280px,
-          210px 210px,
-          260px 260px,
-          230px 230px;
-        background-position:
-          18px 8px,
-          60px 36px,
-          12px 82px,
-          90px 24px,
-          24px 120px,
-          72px 92px,
-          40px 132px,
-          102px 54px;
-        animation: star-sparkle 1.35s steps(2, end) infinite;
-      }
-
-      @keyframes star-sparkle {
-        0%,
-        100% {
-          opacity: 0.18;
-          filter: brightness(0.8);
-        }
-
-        50% {
-          opacity: 0.85;
-          filter: brightness(1.7);
-        }
       }
 
       main {

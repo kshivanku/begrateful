@@ -19,7 +19,7 @@ The current prototype is a single static `index.html` page.
 - When the current smile score is more than `80%`, a circular ticker appears on the green camera ring with a continuous loop of `I am grateful.`
 - The camera frame stays large and centered before and after permission. Do not shrink or dock the video during play.
 - The background should be filled with a continuous vertically scrolling propaganda pattern repeating `Don't boo, be grateful.` across the page as part of the arcade/night-sky atmosphere.
-- The pixel night-sky stars should sparkle with a subtle stepped arcade animation.
+- The pixel night-sky stars should stay static; a sparkle layer was tried and removed because it did not fit the look.
 - When camera detection is running and the current smile score is at or below the `80%` threshold, the screen enters an emergency alarm state with a softened red pulse, a large `Be Grateful` title, and a smaller live smile score readout. Avoid rapid flashing that could be anxiety-triggering.
 - The `Be Grateful` alarm title and smile score both use the arcade-specific pixel font `Press Start 2P`, with the score sized smaller as supporting text.
 - It fills the bottom money wallet when the current smile score is more than `80%`.
@@ -173,7 +173,7 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Restored the centered circular camera frame with the ring, black outline, pixel shadow, and circular `I am grateful.` ticker when the player smiles above the threshold.
 - Made the circular camera ring stateful: yellow before permission, red below the smile threshold after detection starts, and green when the player smiles above `80%`.
 - Changed the `Don't boo, be grateful.` marquee from sparse edge columns into a tiled text background that fills the whole page and scrolls vertically in a seamless loop.
-- Added a second pixel-star layer with a stepped brightness/opacity animation so the night-sky stars sparkle.
+- Removed the extra sparkling star layer, returning the night sky to static pixel stars.
 - Added the live smile score to the `Be Grateful` alarm overlay with font hierarchy: the warning remains dominant and the score appears as smaller supporting text.
 - Softened the `Be Grateful` alarm animation by replacing rapid hard flashes with a slower, lower-contrast red pulse and a gentler card scale change.
 - Changed the `Be Grateful` alarm title to use the pixelated `Press Start 2P` font from Google Fonts and adjusted its size/line-height so the title keeps clear hierarchy without overflowing.
