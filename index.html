@@ -12,7 +12,7 @@
       body {
         margin: 0;
         min-height: 100vh;
-        padding-bottom: 210px;
+        padding-bottom: 150px;
         display: grid;
         place-items: center;
         background:
@@ -201,7 +201,7 @@
         right: 0;
         bottom: 0;
         left: 0;
-        padding: 18px 0 74px;
+        padding: 12px 0 42px;
         background: #111111;
         border-top: 6px solid #ffffff;
         box-shadow: 0 -8px 0 #ffd400;
@@ -211,10 +211,7 @@
         width: min(720px, 100%);
         padding: 0 20px;
         margin: 0 auto 8px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        align-items: center;
-        gap: 18px;
+        overflow: hidden;
         color: #ffffff;
         font-size: 12px;
         font-weight: 900;
@@ -222,6 +219,17 @@
         text-align: center;
         text-shadow: 3px 3px 0 #0646ff;
         text-transform: uppercase;
+      }
+
+      .stats-track {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: center;
+        gap: 18px;
+      }
+
+      .stats-track[aria-hidden="true"] {
+        display: none;
       }
 
       .stat {
@@ -237,10 +245,20 @@
         white-space: nowrap;
       }
 
+      @keyframes stats-scroll {
+        from {
+          transform: translateX(0);
+        }
+
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
       .coin-wallet {
         --stack-width: 0px;
         width: 100vw;
-        min-height: 62px;
+        min-height: 48px;
         margin: 0;
         overflow: hidden;
         background: #ffffff;
@@ -262,8 +280,8 @@
       .deposited-coins {
         position: relative;
         z-index: 1;
-        min-height: 52px;
-        padding: 4px 0 0;
+        min-height: 40px;
+        padding: 3px 0 0;
         display: flex;
         align-items: flex-end;
         gap: 0;
@@ -271,7 +289,7 @@
 
       .deposited-coin {
         width: 12px;
-        height: 52px;
+        height: 40px;
         object-fit: cover;
         image-rendering: pixelated;
       }
@@ -289,10 +307,10 @@
 
       .flying-coin {
         position: absolute;
-        bottom: 5px;
+        bottom: 4px;
         left: 0;
-        width: 52px;
-        height: 52px;
+        width: 40px;
+        height: 40px;
         background-image: url("assets/coin1.png");
         background-position: center;
         background-repeat: no-repeat;
@@ -333,16 +351,16 @@
       .progress-stops {
         position: relative;
         width: 100vw;
-        height: 70px;
-        margin-top: 8px;
+        height: 46px;
+        margin-top: 5px;
       }
 
       .progress-stop {
         position: absolute;
         top: 0;
         left: var(--stop-position);
-        width: 58px;
-        height: 62px;
+        width: 42px;
+        height: 42px;
         display: grid;
         justify-items: center;
         align-items: start;
@@ -353,15 +371,15 @@
         content: "";
         display: block;
         width: 4px;
-        height: 18px;
-        margin: -32px auto 8px;
+        height: 12px;
+        margin: -22px auto 5px;
         background: #ff1744;
         border: 2px solid #ffffff;
       }
 
       .progress-stop img {
-        width: 54px;
-        height: 54px;
+        width: 38px;
+        height: 38px;
         display: block;
         object-fit: contain;
         object-position: center center;
@@ -547,8 +565,26 @@
         }
 
         .progress-header {
-          grid-template-columns: 1fr;
+          width: 100%;
+          padding: 0;
           font-size: 11px;
+        }
+
+        .stats-track {
+          width: max-content;
+          display: flex;
+          gap: 28px;
+          padding-right: 28px;
+          animation: stats-scroll 9s linear infinite;
+        }
+
+        .stats-track[aria-hidden="true"] {
+          display: flex;
+        }
+
+        .stat {
+          width: max-content;
+          min-width: 150px;
         }
 
         .reward-actions {
@@ -589,18 +625,34 @@
 
     <section class="progress-dock" aria-label="You earned">
       <div class="progress-header">
-        <span class="stat">
-          <span>Maximum earning</span>
-          <span class="stat-value" id="maximumEarningValue">$0</span>
-        </span>
-        <span class="stat">
-          <span>Calories consumed</span>
-          <span class="stat-value" id="caloriesConsumedValue">0</span>
-        </span>
-        <span class="stat">
-          <span>Current balance</span>
-          <span class="stat-value" id="currentBalanceValue">$0</span>
-        </span>
+        <div class="stats-track">
+          <span class="stat">
+            <span>Maximum earning</span>
+            <span class="stat-value" id="maximumEarningValue">$0</span>
+          </span>
+          <span class="stat">
+            <span>Calories consumed</span>
+            <span class="stat-value" id="caloriesConsumedValue">0</span>
+          </span>
+          <span class="stat">
+            <span>Current balance</span>
+            <span class="stat-value" id="currentBalanceValue">$0</span>
+          </span>
+        </div>
+        <div class="stats-track" aria-hidden="true">
+          <span class="stat">
+            <span>Maximum earning</span>
+            <span class="stat-value" id="maximumEarningValueLoop">$0</span>
+          </span>
+          <span class="stat">
+            <span>Calories consumed</span>
+            <span class="stat-value" id="caloriesConsumedValueLoop">0</span>
+          </span>
+          <span class="stat">
+            <span>Current balance</span>
+            <span class="stat-value" id="currentBalanceValueLoop">$0</span>
+          </span>
+        </div>
       </div>
       <div class="coin-wallet" id="coinWallet" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="coin-stack-progress" id="coinStackProgress"></div>
@@ -651,6 +703,9 @@
       const maximumEarningValue = document.getElementById("maximumEarningValue");
       const caloriesConsumedValue = document.getElementById("caloriesConsumedValue");
       const currentBalanceValue = document.getElementById("currentBalanceValue");
+      const maximumEarningValueLoop = document.getElementById("maximumEarningValueLoop");
+      const caloriesConsumedValueLoop = document.getElementById("caloriesConsumedValueLoop");
+      const currentBalanceValueLoop = document.getElementById("currentBalanceValueLoop");
       const coinWallet = document.getElementById("coinWallet");
       const depositedCoins = document.getElementById("depositedCoins");
       const flyingCoins = document.getElementById("flyingCoins");
@@ -854,9 +909,16 @@
         const currentBalance = displayedCoinCount * coinMoneyValue;
 
         maximumEarning = Math.max(maximumEarning, currentBalance);
-        maximumEarningValue.textContent = formatMoney(maximumEarning);
-        caloriesConsumedValue.textContent = caloriesConsumed.toLocaleString("en-US");
-        currentBalanceValue.textContent = formatMoney(currentBalance);
+        const maximumEarningText = formatMoney(maximumEarning);
+        const caloriesConsumedText = caloriesConsumed.toLocaleString("en-US");
+        const currentBalanceText = formatMoney(currentBalance);
+
+        maximumEarningValue.textContent = maximumEarningText;
+        maximumEarningValueLoop.textContent = maximumEarningText;
+        caloriesConsumedValue.textContent = caloriesConsumedText;
+        caloriesConsumedValueLoop.textContent = caloriesConsumedText;
+        currentBalanceValue.textContent = currentBalanceText;
+        currentBalanceValueLoop.textContent = currentBalanceText;
         coinWallet.setAttribute("aria-valuenow", Math.round(stackProgress).toString());
         coinWallet.style.setProperty("--stack-width", `${getStackWidth(displayedCoinCount)}px`);
       }
