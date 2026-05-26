@@ -232,6 +232,10 @@
         display: none;
       }
 
+      .stats-marquee {
+        display: block;
+      }
+
       .stat {
         min-width: 0;
         display: grid;
@@ -570,12 +574,20 @@
           font-size: 11px;
         }
 
-        .stats-track {
+        .stats-marquee {
           width: max-content;
           display: flex;
-          gap: 28px;
-          padding-right: 28px;
-          animation: stats-scroll 9s linear infinite;
+          animation: stats-scroll 12s linear infinite;
+        }
+
+        .stats-track {
+          flex: 0 0 auto;
+          width: max-content;
+          display: flex;
+          gap: 32px;
+          padding-right: 32px;
+          align-items: center;
+          animation: none;
         }
 
         .stats-track[aria-hidden="true"] {
@@ -583,8 +595,17 @@
         }
 
         .stat {
+          min-width: 0;
           width: max-content;
-          min-width: 150px;
+          display: inline-flex;
+          align-items: baseline;
+          gap: 8px;
+          justify-items: initial;
+          white-space: nowrap;
+        }
+
+        .stat-value {
+          font-size: 12px;
         }
 
         .reward-actions {
@@ -625,33 +646,35 @@
 
     <section class="progress-dock" aria-label="You earned">
       <div class="progress-header">
-        <div class="stats-track">
-          <span class="stat">
-            <span>Maximum earning</span>
-            <span class="stat-value" id="maximumEarningValue">$0</span>
-          </span>
-          <span class="stat">
-            <span>Calories consumed</span>
-            <span class="stat-value" id="caloriesConsumedValue">0</span>
-          </span>
-          <span class="stat">
-            <span>Current balance</span>
-            <span class="stat-value" id="currentBalanceValue">$0</span>
-          </span>
-        </div>
-        <div class="stats-track" aria-hidden="true">
-          <span class="stat">
-            <span>Maximum earning</span>
-            <span class="stat-value" id="maximumEarningValueLoop">$0</span>
-          </span>
-          <span class="stat">
-            <span>Calories consumed</span>
-            <span class="stat-value" id="caloriesConsumedValueLoop">0</span>
-          </span>
-          <span class="stat">
-            <span>Current balance</span>
-            <span class="stat-value" id="currentBalanceValueLoop">$0</span>
-          </span>
+        <div class="stats-marquee">
+          <div class="stats-track">
+            <span class="stat">
+              <span>Maximum earning</span>
+              <span class="stat-value" id="maximumEarningValue">$0</span>
+            </span>
+            <span class="stat">
+              <span>Calories consumed</span>
+              <span class="stat-value" id="caloriesConsumedValue">0</span>
+            </span>
+            <span class="stat">
+              <span>Current balance</span>
+              <span class="stat-value" id="currentBalanceValue">$0</span>
+            </span>
+          </div>
+          <div class="stats-track" aria-hidden="true">
+            <span class="stat">
+              <span>Maximum earning</span>
+              <span class="stat-value" id="maximumEarningValueLoop">$0</span>
+            </span>
+            <span class="stat">
+              <span>Calories consumed</span>
+              <span class="stat-value" id="caloriesConsumedValueLoop">0</span>
+            </span>
+            <span class="stat">
+              <span>Current balance</span>
+              <span class="stat-value" id="currentBalanceValueLoop">$0</span>
+            </span>
+          </div>
         </div>
       </div>
       <div class="coin-wallet" id="coinWallet" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">

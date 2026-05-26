@@ -22,7 +22,7 @@ The current prototype is a single static `index.html` page.
 - The wallet spans the full viewport width and is visualized as coins instead of a conventional progress fill.
 - The wallet header shows three stats: `Maximum earning`, `Calories consumed`, and `Current balance`.
 - The wallet stats should be visually centered and grouped close together rather than spread across the full viewport.
-- On mobile, the wallet stats should not stack vertically; they should loop horizontally in a compact marquee row.
+- On mobile, the wallet stats should not stack vertically; they should loop horizontally in a compact single-line marquee row without an obvious snap/reset.
 - `Current balance` is the deposited coin count multiplied by `$1000`.
 - `Maximum earning` is the highest current balance reached during the session.
 - `Calories consumed` is the total calories from purchased/eaten foods during the session.
@@ -142,7 +142,7 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Renamed the wallet display from `Smile progress` to `Money` and changed the visible value from percent to dollars. Each deposited coin is worth `$1000`.
 - Replaced the single wallet money readout with three stats: maximum earning, calories consumed, and current balance. Current balance still uses `$1000` per deposited coin; maximum earning tracks the session peak, and calories consumed accumulates after purchases.
 - Centered the three wallet stats in a constrained-width row so the labels and values sit closer together.
-- Changed the mobile wallet stats from stacked rows to a continuously scrolling horizontal stats loop while keeping the desktop row static.
+- Fixed the mobile wallet stats marquee so duplicated stat sets sit in one continuous horizontal strip instead of appearing as two stacked rows. Mobile stat labels and values now render on the same line to reduce height.
 - Paused coin wallet animation while reward dialogs are open and added the matching food image to reward and consumed-food dialog states.
 - Removed the separate food price badge from reward dialogs, added food-specific nutrition facts, and kept the price only inside the purchase CTA. Prices are calculated from the milestone stop percentage and current wallet coin capacity, with each coin worth `$1000`.
 - Center-aligned reward dialog content/actions and changed the post-eating dialog CTA from `Keep going` to `So grateful!`.
