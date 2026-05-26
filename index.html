@@ -208,19 +208,33 @@
       }
 
       .progress-header {
-        width: 100%;
+        width: min(720px, 100%);
         padding: 0 20px;
-        margin: 0 0 8px;
-        display: flex;
+        margin: 0 auto 8px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         align-items: center;
-        justify-content: space-between;
-        gap: 16px;
+        gap: 18px;
         color: #ffffff;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 900;
         letter-spacing: 0.06em;
+        text-align: center;
         text-shadow: 3px 3px 0 #0646ff;
         text-transform: uppercase;
+      }
+
+      .stat {
+        min-width: 0;
+        display: grid;
+        justify-items: center;
+        gap: 2px;
+      }
+
+      .stat-value {
+        color: #ffd400;
+        font-size: 14px;
+        white-space: nowrap;
       }
 
       .coin-wallet {
@@ -319,7 +333,7 @@
       .progress-stops {
         position: relative;
         width: 100vw;
-        height: 64px;
+        height: 70px;
         margin-top: 8px;
       }
 
@@ -327,6 +341,11 @@
         position: absolute;
         top: 0;
         left: var(--stop-position);
+        width: 58px;
+        height: 62px;
+        display: grid;
+        justify-items: center;
+        align-items: start;
         transform: translateX(-50%);
       }
 
@@ -345,6 +364,7 @@
         height: 54px;
         display: block;
         object-fit: contain;
+        object-position: center center;
         image-rendering: pixelated;
         filter: drop-shadow(4px 4px 0 #0646ff);
       }
@@ -399,6 +419,10 @@
         font-size: 16px;
         font-weight: 900;
         line-height: 1.45;
+      }
+
+      .reward-message[hidden] {
+        display: none;
       }
 
       .nutrition-facts {
@@ -522,6 +546,11 @@
           font-size: 30px;
         }
 
+        .progress-header {
+          grid-template-columns: 1fr;
+          font-size: 11px;
+        }
+
         .reward-actions {
           justify-content: stretch;
         }
@@ -560,8 +589,18 @@
 
     <section class="progress-dock" aria-label="You earned">
       <div class="progress-header">
-        <span>You earned</span>
-        <span id="moneyValue">$0</span>
+        <span class="stat">
+          <span>Maximum earning</span>
+          <span class="stat-value" id="maximumEarningValue">$0</span>
+        </span>
+        <span class="stat">
+          <span>Calories consumed</span>
+          <span class="stat-value" id="caloriesConsumedValue">0</span>
+        </span>
+        <span class="stat">
+          <span>Current balance</span>
+          <span class="stat-value" id="currentBalanceValue">$0</span>
+        </span>
       </div>
       <div class="coin-wallet" id="coinWallet" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="coin-stack-progress" id="coinStackProgress"></div>
@@ -570,23 +609,23 @@
       </div>
       <div class="progress-stops" aria-hidden="true">
         <span class="progress-stop" style="--stop-position: 10%">
-          <img src="assets/Banana.png" alt="Banana">
+          <img id="bananaStopImage" src="assets/Banana.png" alt="Banana">
         </span>
         <span class="progress-stop" style="--stop-position: 25%">
-          <img src="assets/Bread.png" alt="Bread">
+          <img id="breadStopImage" src="assets/Bread.png" alt="Bread">
         </span>
         <span class="progress-stop" style="--stop-position: 60%">
-          <img src="assets/Chicken.png" alt="Chicken">
+          <img id="chickenStopImage" src="assets/Chicken.png" alt="Chicken">
         </span>
         <span class="progress-stop" style="--stop-position: 100%">
-          <img src="assets/Cake.png" alt="Cake">
+          <img id="cakeStopImage" src="assets/Cake.png" alt="Cake">
         </span>
       </div>
     </section>
 
     <dialog id="rewardDialog" aria-labelledby="rewardTitle">
       <h2 class="reward-title" id="rewardTitle">Congratulations</h2>
-      <p class="reward-message" id="rewardMessage">Congratulations, you can now eat.</p>
+      <p class="reward-message" id="rewardMessage" hidden></p>
       <section class="nutrition-facts" id="nutritionFacts" hidden>
         <p class="nutrition-title">Nutrition Facts</p>
         <ul class="nutrition-list" id="nutritionList"></ul>
@@ -609,7 +648,9 @@
       const video = document.getElementById("cameraVideo");
       const statusText = document.getElementById("statusText");
       const startButton = document.getElementById("startButton");
-      const moneyValue = document.getElementById("moneyValue");
+      const maximumEarningValue = document.getElementById("maximumEarningValue");
+      const caloriesConsumedValue = document.getElementById("caloriesConsumedValue");
+      const currentBalanceValue = document.getElementById("currentBalanceValue");
       const coinWallet = document.getElementById("coinWallet");
       const depositedCoins = document.getElementById("depositedCoins");
       const flyingCoins = document.getElementById("flyingCoins");
@@ -621,6 +662,12 @@
       const rewardFoodImage = document.getElementById("rewardFoodImage");
       const keepGoingButton = document.getElementById("keepGoingButton");
       const eatButton = document.getElementById("eatButton");
+      const stopImages = {
+        banana: document.getElementById("bananaStopImage"),
+        bread: document.getElementById("breadStopImage"),
+        chicken: document.getElementById("chickenStopImage"),
+        cake: document.getElementById("cakeStopImage")
+      };
 
       const milestones = [
         {
@@ -719,13 +766,18 @@
       let coinAnimationInFlight = false;
       let coinAnimationDirection = null;
       let displayedCoinCount = 0;
+      let dialogState = null;
       let detectorIsRunning = false;
       let lastVideoTime = -1;
       let lastProgressTime;
+      let pauseMoneyUntilGrateful = false;
       let consumedFoodFrameIndex = 0;
       let consumedFoodLoopId;
       let shouldEarnCoins = false;
       let smileProgress = 0;
+      let maximumEarning = 0;
+      let caloriesConsumed = 0;
+      const stopFoodLoops = new Map();
       const reachedMilestones = new Set();
 
       async function loadFaceLandmarker() {
@@ -799,8 +851,12 @@
 
       function updateStackProgressDisplay() {
         const stackProgress = getStackProgress();
+        const currentBalance = displayedCoinCount * coinMoneyValue;
 
-        moneyValue.textContent = formatMoney(displayedCoinCount * coinMoneyValue);
+        maximumEarning = Math.max(maximumEarning, currentBalance);
+        maximumEarningValue.textContent = formatMoney(maximumEarning);
+        caloriesConsumedValue.textContent = caloriesConsumed.toLocaleString("en-US");
+        currentBalanceValue.textContent = formatMoney(currentBalance);
         coinWallet.setAttribute("aria-valuenow", Math.round(stackProgress).toString());
         coinWallet.style.setProperty("--stack-width", `${getStackWidth(displayedCoinCount)}px`);
       }
@@ -851,6 +907,30 @@
           consumedFoodFrameIndex = (consumedFoodFrameIndex + 1) % frames.length;
           rewardFoodImage.src = frames[consumedFoodFrameIndex];
         }, 220);
+      }
+
+      function startStopFoodLoop(milestone) {
+        const stopImage = stopImages[milestone.id];
+
+        if (!stopImage || !milestone.consumedFrames || milestone.consumedFrames.length === 0) {
+          return;
+        }
+
+        const existingLoop = stopFoodLoops.get(milestone.id);
+        if (existingLoop) {
+          clearInterval(existingLoop.intervalId);
+        }
+
+        let frameIndex = 0;
+        const frames = milestone.consumedFrames;
+        stopImage.src = frames[0];
+
+        const intervalId = setInterval(() => {
+          frameIndex = (frameIndex + 1) % frames.length;
+          stopImage.src = frames[frameIndex];
+        }, 220);
+
+        stopFoodLoops.set(milestone.id, { intervalId });
       }
 
       function renderDepositedCoins() {
@@ -998,8 +1078,9 @@
         const milestonePrice = getMilestonePrice(milestone);
 
         activeMilestone = milestone;
+        dialogState = "reward";
         rewardTitle.textContent = `You earned ${milestone.label}`;
-        rewardMessage.textContent = `Congratulations, you can now eat ${milestone.name}.`;
+        rewardMessage.hidden = true;
         renderNutritionFacts(milestone);
         rewardFoodImage.src = milestone.image;
         rewardFoodImage.alt = milestone.label;
@@ -1019,6 +1100,11 @@
         }
 
         const stackProgress = getStackProgress();
+        milestones.forEach((item) => {
+          if (stackProgress < item.progress) {
+            reachedMilestones.delete(item.id);
+          }
+        });
 
         const milestone = milestones.find((item) => {
           return !reachedMilestones.has(item.id) && stackProgress >= item.progress;
@@ -1033,6 +1119,7 @@
       function resetProgress() {
         smileProgress = 0;
         lastProgressTime = performance.now();
+        pauseMoneyUntilGrateful = false;
         reachedMilestones.clear();
         resetCoinWallet();
         renderProgress();
@@ -1046,6 +1133,18 @@
 
         const elapsedSeconds = lastProgressTime ? (now - lastProgressTime) / 1000 : 0;
         const isStrongSmile = typeof score === "number" && score > progressSmileThreshold;
+
+        if (pauseMoneyUntilGrateful) {
+          shouldEarnCoins = false;
+
+          if (!isStrongSmile) {
+            lastProgressTime = now;
+            return;
+          }
+
+          pauseMoneyUntilGrateful = false;
+        }
+
         const rate = isStrongSmile ? progressGainPerSecond : -progressLossPerSecond;
 
         shouldEarnCoins = isStrongSmile;
@@ -1124,12 +1223,19 @@
       }
 
       keepGoingButton.addEventListener("click", () => {
+        if (dialogState === "reward") {
+          pauseMoneyUntilGrateful = true;
+          shouldEarnCoins = false;
+          cancelCoinAnimation();
+        }
+
         rewardDialog.close();
       });
 
       rewardDialog.addEventListener("close", () => {
         stopConsumedFoodLoop();
         activeMilestone = null;
+        dialogState = null;
         lastProgressTime = performance.now();
       });
 
@@ -1139,13 +1245,18 @@
         }
 
         const consumedMilestone = activeMilestone;
+        dialogState = "consumed";
+        pauseMoneyUntilGrateful = false;
+        caloriesConsumed += consumedMilestone.calories;
         resetProgress();
         rewardTitle.textContent = "Yummy";
+        rewardMessage.hidden = false;
         rewardMessage.textContent = `You consumed ${consumedMilestone.calories} calories.`;
         nutritionFacts.hidden = true;
         rewardFoodImage.alt = consumedMilestone.label;
         rewardFoodImage.hidden = false;
         startConsumedFoodLoop(consumedMilestone);
+        startStopFoodLoop(consumedMilestone);
         eatButton.hidden = true;
         keepGoingButton.textContent = "So grateful!";
       });
@@ -1156,6 +1267,7 @@
         detectorIsRunning = false;
         stopGratitudeAlarm();
         stopConsumedFoodLoop();
+        stopFoodLoops.forEach((loop) => clearInterval(loop.intervalId));
         cancelAnimationFrame(animationFrameId);
 
         const stream = video.srcObject;

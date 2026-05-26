@@ -20,7 +20,11 @@ The current prototype is a single static `index.html` page.
 - It fills the bottom money wallet when the current smile score is more than `80%`.
 - It drains the money wallet when the smile score is `80%` or lower, or when no face is detected.
 - The wallet spans the full viewport width and is visualized as coins instead of a conventional progress fill.
-- The wallet label is `Money`, and the displayed value is the deposited coin count multiplied by `$1000`.
+- The wallet header shows three stats: `Maximum earning`, `Calories consumed`, and `Current balance`.
+- The wallet stats should be visually centered and grouped close together rather than spread across the full viewport.
+- `Current balance` is the deposited coin count multiplied by `$1000`.
+- `Maximum earning` is the highest current balance reached during the session.
+- `Calories consumed` is the total calories from purchased/eaten foods during the session.
 - While the player is earning progress, a coin animates from the right side of the wallet lane, flipping between `coin1.png` and `coin2.png`.
 - Deposited wallet coins stack flush from left to right using `coin3.png`.
 - When the smile drops below the earning threshold, coins withdraw from the stack one at a time in the opposite direction at the same animation speed.
@@ -33,6 +37,7 @@ The current prototype is a single static `index.html` page.
   - `60%`: Chicken
   - `100%`: Cake
 - Reaching a stop opens a dialog that congratulates the player and lets them eat the earned food or keep going.
+- The pre-purchase reward dialog should not include a sentence like `Congratulations, you can now eat...`; the title, nutrition facts, food image, and CTAs are enough.
 - Milestone dialogs pause wallet motion. Coin inflow/outflow should stop while the dialog is open and resume only after the dialog closes.
 - Milestone dialogs show the corresponding food image asset.
 - Milestone dialogs show nutrition facts for the food.
@@ -41,7 +46,11 @@ The current prototype is a single static `index.html` page.
 - In the post-eating `Yummy` dialog state, the remaining CTA should say `So grateful!`.
 - In post-eating `Yummy` dialog states, the food image should loop through the matching consumed-frame series when available.
 - Banana uses `assets/BananaEaten-1.png` through `assets/BananaEaten-4.png`; Bread, Chicken, and Cake each use `Eaten-1.png` through `Eaten-6.png` for their respective food names.
+- After food is purchased/eaten, the matching food icon in the progress/wallet milestone bar should also be replaced by that food's consumed-frame loop.
+- Wallet milestone icons must render inside fixed-size boxes so whole/eaten frame swaps do not change the progress bar height.
 - In the pre-purchase reward dialog, the secondary CTA should say `I need to save money`; clicking it closes the dialog and preserves progress.
+- After clicking `I need to save money`, money flow should pause rather than immediately draining while the player is not smiling. The alarm can continue. Money flow resumes once the player becomes grateful/smiles above threshold again.
+- Food milestones should be earnable again after the wallet drops below that milestone and later reaches it again.
 - Progress pauses while the dialog is open.
 
 ## Artistic Direction
@@ -129,9 +138,15 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Added a gratitude alarm state: once detection is active, dropping below the `80%` smile threshold flashes a translucent red screen overlay with large red/white `Be Grateful` warning text.
 - Removed delayed coin-direction changes by driving coin deposit/withdrawal from the current smile threshold state. Dropping below `80%` now cancels incoming coins and starts withdrawal immediately, while rising above `80%` cancels withdrawal and starts deposits immediately.
 - Renamed the wallet display from `Smile progress` to `Money` and changed the visible value from percent to dollars. Each deposited coin is worth `$1000`.
+- Replaced the single wallet money readout with three stats: maximum earning, calories consumed, and current balance. Current balance still uses `$1000` per deposited coin; maximum earning tracks the session peak, and calories consumed accumulates after purchases.
+- Centered the three wallet stats in a constrained-width row so the labels and values sit closer together.
 - Paused coin wallet animation while reward dialogs are open and added the matching food image to reward and consumed-food dialog states.
 - Removed the separate food price badge from reward dialogs, added food-specific nutrition facts, and kept the price only inside the purchase CTA. Prices are calculated from the milestone stop percentage and current wallet coin capacity, with each coin worth `$1000`.
 - Center-aligned reward dialog content/actions and changed the post-eating dialog CTA from `Keep going` to `So grateful!`.
 - Changed the pre-purchase secondary dialog CTA from `Keep going` to `I need to save money` and ensured reward dialog actions are centered.
 - Added a banana consumed animation for the `Yummy` dialog by looping through `BananaEaten-1.png`, `BananaEaten-2.png`, `BananaEaten-3.png`, and `BananaEaten-4.png`; the loop stops when the dialog closes.
 - Added consumed-frame loops for Bread, Chicken, and Cake Yummy dialogs using their respective `BreadEaten-1.png` through `BreadEaten-6.png`, `ChickenEaten-1.png` through `ChickenEaten-6.png`, and `CakeEaten-1.png` through `CakeEaten-6.png` assets.
+- Updated wallet milestone food icons so after a food is purchased, its progress-bar image changes from the whole food asset to the matching consumed-frame loop.
+- Fixed wallet milestone icon sizing so consumed-frame loops do not make the progress bar jump vertically.
+- Removed the pre-purchase reward dialog sentence `Congratulations, you can now eat...` while keeping the consumed-calorie message in the Yummy state.
+- Changed save-money behavior so dismissing a reward dialog pauses wallet inflow/outflow until the player smiles above the `80%` threshold again. Also re-arms reached food milestones once the wallet drops below them, allowing the same food dialog to appear again after losing and re-earning enough money.
