@@ -40,6 +40,7 @@ The current prototype is a single static `index.html` page.
   - `60%`: Chicken
   - `100%`: Cake
 - Reaching a stop opens a dialog that congratulates the player and lets them eat the earned food or keep going.
+- Earned-food dialog titles should use natural grammar, such as `You earned a banana`, not `You earned banana`.
 - The pre-purchase reward dialog should not include a sentence like `Congratulations, you can now eat...`; the title, nutrition facts, food image, and CTAs are enough.
 - Milestone dialogs pause wallet motion. Coin inflow/outflow should stop while the dialog is open and resume only after the dialog closes.
 - Milestone dialogs show the corresponding food image asset.
@@ -158,5 +159,6 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Added mobile-specific wallet compaction with shorter dock padding, smaller coin lane, smaller coin sprites, smaller food milestone icons, and reduced mobile body bottom padding.
 - Changed the camera docking behavior: it no longer moves immediately after permission. It now animates to an approximately `160px x 160px` top-center bubble only after the player earns at least three coins while smiling, and animates back to center as soon as the player stops smiling.
 - Adjusted camera docking CSS/animation math to anchor movement from the center of the camera circle instead of top-left positioning, reducing sideways drift during zoom in/out.
+- Updated reward dialog title grammar with per-food articles, e.g. `You earned a banana` and `You earned some bread`.
 - Removed the pre-purchase reward dialog sentence `Congratulations, you can now eat...` while keeping the consumed-calorie message in the Yummy state.
 - Changed save-money behavior so dismissing a reward dialog pauses wallet inflow/outflow until the player smiles above the `80%` threshold again. Also re-arms reached food milestones once the wallet drops below them, allowing the same food dialog to appear again after losing and re-earning enough money.

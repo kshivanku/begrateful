@@ -845,6 +845,7 @@
           id: "banana",
           name: "banana",
           label: "Banana",
+          article: "a",
           progress: 10,
           calories: 105,
           image: "assets/Banana.png",
@@ -864,6 +865,7 @@
           id: "bread",
           name: "bread",
           label: "Bread",
+          article: "some",
           progress: 25,
           calories: 80,
           image: "assets/Bread.png",
@@ -885,6 +887,7 @@
           id: "chicken",
           name: "chicken",
           label: "Chicken",
+          article: "some",
           progress: 60,
           calories: 165,
           image: "assets/Chicken.png",
@@ -906,6 +909,7 @@
           id: "cake",
           name: "cake",
           label: "Cake",
+          article: "some",
           progress: 100,
           calories: 350,
           image: "assets/Cake.png",
@@ -1299,7 +1303,7 @@
 
         activeMilestone = milestone;
         dialogState = "reward";
-        rewardTitle.textContent = `You earned ${milestone.label}`;
+        rewardTitle.textContent = `You earned ${milestone.article} ${milestone.name}`;
         rewardMessage.hidden = true;
         renderNutritionFacts(milestone);
         rewardFoodImage.src = milestone.image;
