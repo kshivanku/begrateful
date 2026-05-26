@@ -16,14 +16,54 @@
         display: grid;
         place-items: center;
         background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-          linear-gradient(135deg, #0646ff 0 32%, #ff1744 32% 58%, #ffd400 58% 100%);
-        background-size: 18px 18px, 18px 18px, 100% 100%;
+          linear-gradient(180deg, #05071f 0%, #07124a 48%, #0a2d78 78%, #101010 100%);
         color: #fff7d6;
         font-family: "Courier New", Courier, monospace;
         image-rendering: pixelated;
         overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        image-rendering: pixelated;
+      }
+
+      body::before {
+        z-index: 0;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+          radial-gradient(circle at 16% 20%, #fff7d6 0 2px, transparent 3px),
+          radial-gradient(circle at 30% 12%, #ffd400 0 2px, transparent 3px),
+          radial-gradient(circle at 48% 28%, #ffffff 0 2px, transparent 3px),
+          radial-gradient(circle at 66% 18%, #fff7d6 0 2px, transparent 3px),
+          radial-gradient(circle at 83% 34%, #ffd400 0 2px, transparent 3px),
+          radial-gradient(circle at 10% 52%, #ffffff 0 2px, transparent 3px),
+          radial-gradient(circle at 76% 55%, #fff7d6 0 2px, transparent 3px);
+        background-size:
+          24px 24px,
+          24px 24px,
+          180px 180px,
+          230px 230px,
+          260px 260px,
+          210px 210px,
+          290px 290px,
+          250px 250px,
+          220px 220px;
+        background-position:
+          0 0,
+          0 0,
+          0 0,
+          42px 18px,
+          20px 52px,
+          80px 28px,
+          16px 72px,
+          66px 96px,
+          30px 118px;
       }
 
       main {
@@ -33,6 +73,7 @@
         justify-items: center;
         gap: 24px;
         position: relative;
+        z-index: 1;
       }
 
       .camera-shell {
@@ -201,6 +242,7 @@
         right: 0;
         bottom: 0;
         left: 0;
+        z-index: 4;
         padding: 12px 0 42px;
         background: #111111;
         border-top: 6px solid #ffffff;

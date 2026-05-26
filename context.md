@@ -66,6 +66,7 @@ The look and feel should move toward an arcade game:
 - Pixel art
 - Primary colors
 - Bright, vibrant, loud visual language
+- The main body background should feel like a pixel-art night sky, with arcade brightness layered on top rather than a neutral page background.
 - Surrealist imagery and interactions
 - Celebration should feel intense when the player earns food or eats food
 - The subject matter is dark, but the surface should be colorful and playful
@@ -162,3 +163,5 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Removed the pre-purchase reward dialog sentence `Congratulations, you can now eat...` while keeping the consumed-calorie message in the Yummy state.
 - Changed save-money behavior so dismissing a reward dialog pauses wallet inflow/outflow until the player smiles above the `80%` threshold again. Also re-arms reached food milestones once the wallet drops below them, allowing the same food dialog to appear again after losing and re-earning enough money.
 - Made wallet progression progressively harder by reducing earn/loss rates as balance rises and by increasing each coin's travel duration from the base speed according to current wallet progress.
+- Replaced the main body geometric primary-color background with a pixel-art night sky using deep blue gradients, grid texture, and square star fields.
+- Removed the extra blue/yellow V stripes and translucent red horizontal band from the night-sky background so the body reads as a cleaner pixelated sky.
