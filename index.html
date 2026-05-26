@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Camera Circle</title>
+    <title>Begrateful</title>
     <style>
       * {
         box-sizing: border-box;
@@ -24,7 +24,8 @@
         position: relative;
       }
 
-      body::before {
+      body::before,
+      body::after {
         content: "";
         position: fixed;
         inset: 0;
@@ -66,6 +67,52 @@
           30px 118px;
       }
 
+      body::after {
+        z-index: 0;
+        opacity: 0.2;
+        background:
+          radial-gradient(circle at 12% 24%, #ffffff 0 2px, transparent 3px),
+          radial-gradient(circle at 34% 18%, #ffd400 0 2px, transparent 3px),
+          radial-gradient(circle at 57% 36%, #ffffff 0 2px, transparent 3px),
+          radial-gradient(circle at 72% 14%, #ffd400 0 2px, transparent 3px),
+          radial-gradient(circle at 91% 44%, #ffffff 0 2px, transparent 3px),
+          radial-gradient(circle at 21% 68%, #ffd400 0 2px, transparent 3px),
+          radial-gradient(circle at 45% 82%, #ffffff 0 2px, transparent 3px),
+          radial-gradient(circle at 80% 76%, #ffd400 0 2px, transparent 3px);
+        background-size:
+          160px 160px,
+          220px 220px,
+          250px 250px,
+          190px 190px,
+          280px 280px,
+          210px 210px,
+          260px 260px,
+          230px 230px;
+        background-position:
+          18px 8px,
+          60px 36px,
+          12px 82px,
+          90px 24px,
+          24px 120px,
+          72px 92px,
+          40px 132px,
+          102px 54px;
+        animation: star-sparkle 1.35s steps(2, end) infinite;
+      }
+
+      @keyframes star-sparkle {
+        0%,
+        100% {
+          opacity: 0.18;
+          filter: brightness(0.8);
+        }
+
+        50% {
+          opacity: 0.85;
+          filter: brightness(1.7);
+        }
+      }
+
       main {
         width: min(100%, 560px);
         padding: 32px 20px;
@@ -74,6 +121,29 @@
         gap: 24px;
         position: relative;
         z-index: 1;
+      }
+
+      .slogan-marquee {
+        position: fixed;
+        inset: 0 0 150px;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='46' viewBox='0 0 340 46'%3E%3Ctext x='2' y='30' fill='%23ffffff' stroke='%23ff1744' stroke-width='3' paint-order='stroke' opacity='0.34' font-family='Courier New, monospace' font-size='21' font-weight='900'%3EDon%27t boo, be grateful.%3C/text%3E%3C/svg%3E");
+        background-position: 0 0;
+        background-repeat: repeat;
+        background-size: 340px 46px;
+        animation: slogan-scroll 1.8s linear infinite;
+      }
+
+      @keyframes slogan-scroll {
+        from {
+          background-position: 0 0;
+        }
+
+        to {
+          background-position: 0 -46px;
+        }
       }
 
       .camera-shell {
@@ -85,6 +155,8 @@
       }
 
       .camera-frame {
+        --camera-ring-color: #ffd400;
+        --camera-ring-shadow: #ff1744;
         width: 100%;
         aspect-ratio: 1;
         border-radius: 50%;
@@ -94,13 +166,24 @@
           linear-gradient(45deg, #111111 25%, #222222 25% 75%, #111111 75%);
         background-position: 0 0, 10px 10px;
         background-size: 20px 20px;
-        border: 30px solid #ffd400;
+        border: 30px solid var(--camera-ring-color);
         outline: 8px solid #111111;
-        box-shadow: 14px 14px 0 #111111, -8px -8px 0 #ff1744;
+        box-shadow: 14px 14px 0 #111111, -8px -8px 0 var(--camera-ring-shadow);
         display: grid;
         place-items: center;
         position: relative;
         z-index: 1;
+        transition: border-color 120ms steps(2, end), box-shadow 120ms steps(2, end);
+      }
+
+      body.is-detector-running .camera-frame {
+        --camera-ring-color: #ff1744;
+        --camera-ring-shadow: #ffd400;
+      }
+
+      .camera-shell.is-strong-smile .camera-frame {
+        --camera-ring-color: #00d26a;
+        --camera-ring-shadow: #0646ff;
       }
 
       .gratitude-ticker {
@@ -597,6 +680,12 @@
           gap: 18px;
         }
 
+        .slogan-marquee {
+          inset: 0 0 104px;
+          background-size: 260px 38px;
+          animation-duration: 1.65s;
+        }
+
         .camera-shell {
           width: min(330px, calc(100vw - 52px));
         }
@@ -604,7 +693,7 @@
         .camera-frame {
           border-width: 24px;
           outline-width: 6px;
-          box-shadow: 8px 8px 0 #111111, -5px -5px 0 #ff1744;
+          box-shadow: 8px 8px 0 #111111, -5px -5px 0 var(--camera-ring-shadow);
         }
 
         .gratitude-ticker {
@@ -725,6 +814,8 @@
       <span>Be Grateful</span>
     </div>
 
+    <div class="slogan-marquee" aria-hidden="true"></div>
+
     <main>
       <div class="camera-shell" id="cameraShell">
         <svg class="gratitude-ticker" viewBox="0 0 500 500" aria-hidden="true">
@@ -746,7 +837,7 @@
       <button id="startButton" type="button">Allow camera</button>
     </main>
 
-    <section class="progress-dock" aria-label="You earned">
+    <section class="progress-dock" id="progressDock" aria-label="You earned">
       <div class="progress-header">
         <div class="stats-marquee">
           <div class="stats-track">
@@ -1028,6 +1119,11 @@
 
       function stopGratitudeAlarm() {
         document.body.classList.remove("is-gratitude-alarm");
+      }
+
+      function setDetectorRunning(isRunning) {
+        detectorIsRunning = isRunning;
+        document.body.classList.toggle("is-detector-running", isRunning);
       }
 
       function renderProgress() {
@@ -1419,7 +1515,7 @@
           await video.play();
           frame.classList.add("is-ready");
           startButton.style.display = "none";
-          detectorIsRunning = true;
+          setDetectorRunning(true);
           detectSmile();
         } catch (error) {
           startButton.disabled = false;
@@ -1428,7 +1524,7 @@
             error.name === "NotAllowedError"
               ? "Camera permission was blocked. Allow camera access in your browser to continue."
               : "Could not start the camera or smile detector. Please check your camera and connection.";
-          detectorIsRunning = false;
+          setDetectorRunning(false);
           updateGratitudeTicker(null);
           stopGratitudeAlarm();
         }
@@ -1476,7 +1572,7 @@
       window.addEventListener("resize", renderProgress);
       startButton.addEventListener("click", startCamera);
       window.addEventListener("beforeunload", () => {
-        detectorIsRunning = false;
+        setDetectorRunning(false);
         stopGratitudeAlarm();
         stopConsumedFoodLoop();
         stopFoodLoops.forEach((loop) => clearInterval(loop.intervalId));

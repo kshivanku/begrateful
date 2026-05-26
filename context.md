@@ -15,8 +15,11 @@ The current prototype is a single static `index.html` page.
 - It uses MediaPipe Face Landmarker in the browser to estimate whether the player is smiling.
 - It reads the `mouthSmileLeft` and `mouthSmileRight` blendshape scores.
 - It does not show the smile score directly on screen.
-- When the current smile score is more than `80%`, a circular ticker appears on the yellow camera ring with a continuous loop of `I am grateful.`
+- The camera ring is yellow before camera permission/detection starts, red when the detector is running and the player is below the `80%` smile threshold, and green when they are smiling above the threshold.
+- When the current smile score is more than `80%`, a circular ticker appears on the green camera ring with a continuous loop of `I am grateful.`
 - The camera frame stays large and centered before and after permission. Do not shrink or dock the video during play.
+- The background should be filled with a continuous vertically scrolling propaganda pattern repeating `Don't boo, be grateful.` across the page as part of the arcade/night-sky atmosphere.
+- The pixel night-sky stars should sparkle with a subtle stepped arcade animation.
 - When camera detection is running and the current smile score is at or below the `80%` threshold, the screen enters an emergency alarm state with flashing red overlay and large `Be Grateful` text.
 - It fills the bottom money wallet when the current smile score is more than `80%`.
 - It drains the money wallet when the smile score is `80%` or lower, or when no face is detected.
@@ -136,7 +139,7 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Restyled `index.html` toward the intended arcade-game direction using primary colors, pixel-like hard edges, chunky black outlines, offset shadows, uppercase monospace text, a striped wallet bar, and louder reward dialog styling.
 - Replaced wallet stop text labels with food image assets from `assets/`: `Banana.png`, `Bread.png`, `Chicken.png`, and `Cake.png`.
 - Removed the visible smile score/expression panel from `index.html` and added a circular gratitude ticker around the camera that appears only when the current smile score is more than `80%`.
-- Adjusted the camera composition so the camera is smaller, the yellow ring is thicker, and the ticker text sits directly on the yellow camera ring with larger type.
+- Adjusted the camera composition so the camera is smaller, the ring is thicker, and the ticker text sits directly on the camera ring with larger type.
 - Removed the top `BEGRATEFUL` label above the camera and changed the circular ticker copy to `I am grateful.`
 - Replaced the visual wallet/progress bar fill with coin animation assets from `assets/`: `coin1.png` and `coin2.png` for the flying animated coin, and `coin3.png` for deposited coins stacked from left to right.
 - Tuned the coin wallet so deposited coins sit directly next to each other, incoming coins travel more slowly, and milestone/progress display is based on deposited coin stack value.
@@ -165,3 +168,8 @@ This file is the project memory. Keep it current so anyone who picks up the proj
 - Made wallet progression progressively harder by reducing earn/loss rates as balance rises and by increasing each coin's travel duration from the base speed according to current wallet progress.
 - Replaced the main body geometric primary-color background with a pixel-art night sky using deep blue gradients, grid texture, and square star fields.
 - Removed the extra blue/yellow V stripes and translucent red horizontal band from the night-sky background so the body reads as a cleaner pixelated sky.
+- Briefly tested a full-page video stage, then reverted it because it did not fit the desired composition.
+- Restored the centered circular camera frame with the ring, black outline, pixel shadow, and circular `I am grateful.` ticker when the player smiles above the threshold.
+- Made the circular camera ring stateful: yellow before permission, red below the smile threshold after detection starts, and green when the player smiles above `80%`.
+- Changed the `Don't boo, be grateful.` marquee from sparse edge columns into a tiled text background that fills the whole page and scrolls vertically in a seamless loop.
+- Added a second pixel-star layer with a stepped brightness/opacity animation so the night-sky stars sparkle.
